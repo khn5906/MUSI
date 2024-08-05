@@ -1,0 +1,104 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block title %}INFO{% endblock %}
+{% block style %}
+<style>
+    body {
+            font-family: Arial, sans-serif;
+    }
+
+  .table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    width: 50px;
+    height: 10px;
+  }
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="ftco-section">	
+	<div class="container-fluid p-0">
+		<!-- #전체너비사용 -->
+	</div>
+</section>
+<section class="ftco-section">	
+	<div class="container-fluid p-0">
+		<!-- #전체너비사용 -->
+	</div>
+
+  <!-- <script>
+    if ('{{ msg }}'.length > 0) {
+      alert('{{ msg }}');
+    }
+
+    function changePwdBtn(btn){
+      changePwd = document.getElementById("changePwd");
+
+      if (document.querySelector('#changePwd th')) {
+        changePwd.removeChild(th);
+        changePwd.removeChild(td);
+        btn.innerText = "변경";
+        return;
+      }
+
+      btn.innerText = "닫기";
+      th = document.createElement("th");
+      th.innerText = "변경할 암호";
+      td = document.createElement("td");
+      td.innerHTML = "<input style='width:250px;' type='password' name='password'>";
+
+      changePwd.append(th);
+      changePwd.append(td);
+    }
+  </script>
+
+  <form method="post" class="container" style="margin-top:50px">{% csrf_token %}
+    <table class="table text-center" style="width:60%;" align="center">
+      <tr>
+        <th>사용자 아이디</th>
+        <td><input type="text" name="username" value="{{ userInfo.username }}" disabled style="width:250px;"></td>
+      </tr>
+      <tr>
+        <th>기존 사용자 암호 <button type='button' onclick="changePwdBtn(this)" class="btn border-secondary">변경</button></th>
+        <td><input type="password" id="pw1" name="origin" style="width:250px;"></td>
+      </tr>
+      <tr id="changePwd">
+      </tr>
+      <tr>
+        <th>이름</th>
+        <td><input type="text" name="first_name" value="{{ userInfo.first_name }}" style="width:250px;"></td>
+      </tr>
+      <tr>
+        <th>성</th>
+        <td><input type="text" name="last_name" value="{{ userInfo.last_name }}" style="width:250px;"></td>
+      </tr>
+      <tr>
+        <th>이메일</th>
+        <td><input type="email" name="email" value="{{ userInfo.email }}" style="width:250px;"></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input type="submit" class="btn btn-warning" value="회원수정" style="width:150px">
+          <input type="reset" class="btn border-secondary" value="취소" style="width:150px">
+          <input type="button" value="회원탈퇴" class="btn border-secondary" onclick="myinfoDel()" style="width:150px">
+          <script>
+            function myinfoDel(){
+              
+            }
+          </script>
+        </td>
+      </tr>
+    </table>
+  </form> -->
+
+{% endblock %}

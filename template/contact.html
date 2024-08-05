@@ -1,0 +1,110 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}contact{% endblock %}
+
+{% block style %}
+<style>
+    .custom-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+
+    .map-container {
+        width: 100%;
+        height: 100%; /* 원하는 높이로 설정 */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="ftco-section contact-section ftco-no-pb" data-section="contact" style="margin-top:100px">
+    <div class="container">
+        <div class="row justify-content-center pb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <span class="subheading">contact</span>
+                <!-- <h2 class="mb-4">Contact Us</h2> -->
+                <p style="color:#4e555b">문의사항은 메일로 보내주세요. 최대한 빠른 시일 내에 답변드리겠습니다.</p>
+            </div>
+        </div>
+        <div class="row no-gutters justify-content-center">
+            <div class="col-md-4 order-md-last d-flex">
+                <form class="bg-light p-4 contact-form" method="post" name="frm1"> 
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Your Name" name="name" id="name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" placeholder="Your Email" name="email" id="email">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Subject" name="subject" id="subject">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" id="message" cols="30" rows="7" class="form-control" placeholder="Message"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="square-button py-3 mx-0" style="width: 100%;" value="Send Message">
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6 d-flex p-4">
+                <div id="map" class="map-container"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section">
+    <div class="container-fluid p-0">
+    </div>
+</section>
+
+<!-- Move JavaScript here -->
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z0aqdob57h"></script>
+<script>
+
+    var cityhall = new naver.maps.LatLng(37.5129887, 126.9399163),
+        map = new naver.maps.Map('map', {
+            center: cityhall.destinationPoint(0, 10),
+            zoom: 18
+        }),
+        marker = new naver.maps.Marker({
+            map: map,
+            position: cityhall
+        });
+
+        var imageUrl = "{% static 'images/musimark.png' %}";
+        var contentString = [
+            '<div class="iw_inner" style="display: flex; align-items: center;">',
+            '   <img src="' + imageUrl + '" width="70" height="70" style="margin-right:10px;">',
+            '   <div>', // 텍스트를 포함할 추가 div
+            '       <p style="color:black; margin:0; font-size:25px;">MUSI</p>',
+            '       <p style="color:black; margin:0; font-size:15px; margin-right:20px;">06928 | 서울특별시 동작구 장승배기로 171 <br/></p>',
+            '   </div>',
+            '</div>'
+        ].join('');
+
+
+
+    var infowindow = new naver.maps.InfoWindow({
+        content: contentString
+    });
+
+    naver.maps.Event.addListener(marker, "click", function(e) {
+        if (infowindow.getMap()) {
+            infowindow.close();
+        } else {
+            infowindow.open(map, marker);
+        }
+    });
+
+    infowindow.open(map, marker);
+
+</script>
+
+{% endblock %}
