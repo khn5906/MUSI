@@ -126,6 +126,9 @@ def contact(request):
         msg += "location.href='http://localhost:8000/';";
         msg += "</script>";
         return HttpResponse(msg)
+    
+def tableau_musi(request):
+    return render(request, 'tableau_musi.html');
 
 def story(request):
     return render(request, 'story.html');

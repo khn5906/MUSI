@@ -8047,7 +8047,8 @@ h1, h2, h3, h4, h5,
       padding-bottom: 20px;
       margin-right: 0px; } }
   .ftco-navbar-light .navbar-nav > .nav-item > .nav-link {
-    font-size: 20px;
+    font-size: 17px;
+    font-weight: bold;
     padding-top: .7rem;
     padding-bottom: .7rem;
     padding-left: 20px;
@@ -8101,7 +8102,7 @@ h1, h2, h3, h4, h5,
     cursor: pointer;
     padding-right: 0;
     text-transform: uppercase;
-    font-size: 16px;
+    font-size: 18px;
     letter-spacing: .1em; }
     .ftco-navbar-light .navbar-toggler:hover, .ftco-navbar-light .navbar-toggler:focus {
       text-decoration: none;
@@ -8154,7 +8155,7 @@ h1, h2, h3, h4, h5,
       border-color: rgba(0, 0, 0, 0.5) !important;
       cursor: pointer;
       text-transform: uppercase;
-      font-size: 20px;
+      font-size: 16px;
       letter-spacing: .1em; }
     .ftco-navbar-light.scrolled .nav-link {
       color: #000000 !important; }

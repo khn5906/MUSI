@@ -31,7 +31,8 @@ urlpatterns = [
     path("login/", views.login),
     path("logout/", views.logout, name='logout'),
     path("myinfo/", views.myinfo, name='myinfo'),    
-    path("analysis/", include('analysis.urls'))
+    path("analysis/", include('analysis.urls')),
+    path("tableau_musi/", views.tableau_musi)
 ]
 
 if settings.DEBUG:
