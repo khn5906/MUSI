@@ -60,8 +60,11 @@ def get_performance_info(service_key, current_date, pages=10, rows=50):
     total_df = pd.merge(award_df, list_df, on='PRFID', how='right')  # 공연중인 뮤지컬 리스트
     total_df=total_df.drop_duplicates()  # 중복행 제거 (공연중인 뮤지컬 리스트 + 수상내역 연결)
     
-    os.makedirs('./data', exist_ok=True)  # 디렉토리가 존재하지 않으면 생성
-    save_path = f'./data/musical_detail_{current_date}.csv'
+    current_dir = os.path.dirname(__file__)
+    data_dir = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
+    os.makedirs(data_dir, exist_ok=True)
+    
+    save_path = os.path.join(data_dir, f'performance_list_{current_date}.csv')
     total_df.to_csv(save_path, index=False, encoding='utf-8-sig')
     print('get performance list: ', total_df)
     return total_df
@@ -112,7 +115,11 @@ def get_perf_details(dataFrame, service_key, current_date):
     column_names = ['PRFID', 'PRFNM', 'PRFPDFROM', 'PRFPDTO', 'PRFCAST', 'PRFCREW', 'PRFRUNTIME', 'PRFAGE', 'ENTRPSNM', 'PCSEGUIDANCE', 'POSTER', 'RELATES', 'PLACEID', 'INFO URLS']
     df = pd.DataFrame(total_list, columns=column_names)
     
-    save_path = f'./data/ing_musical_detail_{current_date}.csv'
+    current_dir = os.path.dirname(__file__)
+    data_dir = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
+    os.makedirs(data_dir, exist_ok=True)
+    
+    save_path = os.path.join(data_dir, f'all_detail_list_{current_date}.csv')
     df.to_csv(save_path, index=False, encoding='utf-8-sig')
     print('완료')
     return df  # 공연중인 뮤지컬 세부사항 데이터프레임 반환
@@ -150,14 +157,22 @@ def get_boxoffice_rank(dataFrame, current_date, service_key):  # 공연중인 �
     total_df = pd.merge(dataFrame, average_rank_df, on='PRFID', how='left')
     total_df=total_df.sort_values('AVG RANK')  # 순위순으로 오름차순 정렬
     
-    save_path = f'./data/ing_musical_ranking_total_{current_date}.csv'
+    current_dir = os.path.dirname(__file__)
+    data_dir = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
+    os.makedirs(data_dir, exist_ok=True)
+    
+    save_path = os.path.join(data_dir, f'final_musical_detail_{current_date}.csv')
     total_df.to_csv(save_path, index=False, encoding='utf-8-sig')
     
     print('완료')
-    top10_save=f'./data/ing_musical_top10_{current_date}.csv'
+    current_dir = os.path.dirname(__file__)
+    data_dir = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
+    os.makedirs(data_dir, exist_ok=True)
+    
+    top10_save_path = os.path.join(data_dir, f'musical_top10_{current_date}.csv')
     top_10_df = total_df[total_df['AVG RANK'].notna()].head(10)
     top_10_df['AVG RANK_DESC']=(top_10_df.iloc[-1,-1]+top_10_df.iloc[0, -1])-top_10_df['AVG RANK']
-    top_10_df.to_csv(top10_save, index=False, encoding='utf-8-sig')
+    top_10_df.to_csv(top10_save_path, index=False, encoding='utf-8-sig')
     
     return total_df, top_10_df;
 
