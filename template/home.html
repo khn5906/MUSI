@@ -12,7 +12,8 @@
 	
 		<title>{% block title %}home{% endblock %}</title>
 		
-		<link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900" rel="stylesheet">		
+		<link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Anton&family=Do+Hyeon&family=IBM+Plex+Sans+KR&family=Nanum+Gothic&family=Noto+Serif+KR:wght@400..500&display=swap" rel="stylesheet">	
 		<link rel="stylesheet" href="{% static 'css/open-iconic-bootstrap.min.css' %}">
 		<link rel="stylesheet" href="{% static 'css/animate.css' %}">
 		<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
@@ -29,6 +30,19 @@
 		
 
 		<style>
+			body {
+				font-family: "Rubik", 'Nanum Gothic' !important;
+				font-weight: 400;}
+
+			/* 한글을 위한 폰트 적용 */
+			@font-face {
+				font-family: 'IBM Plex Sans KR';
+				src: url('https://fonts.gstatic.com/s/notoserifkr/v13/tQSH8OwwWzgoFYkVwWsm0klCi7VdZ9KxYmgC3ckgFaRtlGvTzY5IkUu5Jw.woff2') format('woff2');
+				font-style: normal;
+				unicode-range: U+AC00-D7AF; /* 한글 범위 */
+			}
+	
+
 			.video-container {
 				position: absolute;
 				width: 100%;
@@ -186,7 +200,8 @@
 				color: #000 !important; /* 텍스트 색상 */
 				padding: 0px 0px 10px 20px; /* 항목 안쪽 여백 */
 				text-decoration: none; /* 텍스트 장식 제거 */
-				font-size: 15px !important;			
+				font-size: 15px !important;		
+				
 			}
 
 			/* 드롭다운 항목 호버 스타일 */
@@ -219,9 +234,10 @@
 			position:fixed;   
 			z-index: 10;
 			width: 100%;
-            background-color: #fff !important;
+            background-color: #b6b6b6 !important;
             height: 0px;
-            transition: height 0.3s ease;				
+            transition: height 0.3s ease;	
+			opacity: 0.1;			
         	}
 
 		</style>
@@ -247,8 +263,9 @@
 							What's ON
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/story/'">All About</a>
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/tableau_musi/'">한눈에 보는 뮤지컬</a>
+							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/story/'">Reservation</a>
+							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/tableau_musi/'">All about Musical</a>
+							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/tableau_musi/'">All about Theater</a>
 						</div>
 					</li>
 					<li class="nav-item dropdown mx-3">
