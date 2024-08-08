@@ -8,7 +8,7 @@ from django.core.mail import EmailMessage
 from django.core.mail import EmailMessage
 from django.shortcuts import render
 from django.conf import settings
-import logging
+import logging, ast
 import pandas as pd
 from datetime import datetime, timedelta
 
@@ -167,6 +167,7 @@ def reservation(request, prfid):
     
     try:
         df = read_and_process_file(current_date)
+        
     except Exception as e:
         print(f'예외발생: {e}')
         yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
@@ -176,11 +177,17 @@ def reservation(request, prfid):
     prfid_idx = next((idx for idx, id in enumerate(ids) if prfid == id), None)
     
     if prfid_idx is not None:
-        rlt_list = df.iloc[prfid_idx, :].tolist()
+        rlt_list = df.iloc[prfid_idx, :].tolist()  # 해당되는 열의 모든 정보 가져오기
         col_list = df.columns.tolist()
         
         content_dict = {col: rlt for col, rlt in zip(col_list, rlt_list)}
+        content_dict['PCSEGUIDANCE']=content_dict.get('PCSEGUIDANCE').replace(', ', '<br>')
         
+        content_dict['RELATES'] = ast.literal_eval(content_dict['RELATES'])  # ast 모듈로 텍스트를 리스트로 변환
+        url_sites=content_dict['RELATES']
+        
+        content_dict['RELATES'] = { site: url for site, url in url_sites }
+    
         content = {
             'content_dict': content_dict,
         }

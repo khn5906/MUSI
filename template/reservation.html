@@ -32,13 +32,14 @@
     .infoLabel {
         font-weight: bold;
         font-size: 18px; 
-        width: 90px;
+        width: 100px;
     }
 </style>
+
 {% endblock %}
 
 {% block content %}
-<section class="ftco-section">    
+<section class="ftco-section" style="color:black;">    
     <div class="container">
         <div class="leftWingWrapper">
             <ul></ul>
@@ -49,12 +50,12 @@
                     <div class="summary">
                         <div class="summaryTop">
                             <div class="tag">
-                                <h2 class="prfnm">{{ content_dict.PRFNM }}</h2>
+                                <h2 class="prfnm" style="font-weight: bold; padding-left: 10px;">{{ content_dict.PRFNM }}</h2>
                                 <p class="prdTitleSmall"></p>
                             </div>
                             <div class="prdSection">
                                 <div class="tagText">
-                                    <span>뮤지컬</span>
+                                    <!-- <span style="font-weight: bold; font-size: small;">뮤지컬</span> -->
                                 </div>
                             </div>
                         </div>
@@ -68,33 +69,62 @@
                     </div>
                 </div>
             </div>
-            <div class="productSide" style="color:black; margin-top:150px;">
-                <ul class="info">
+            <div class="productSide" style="display: flex; align-items: center;">
+                <ul class="info" style="margin-top: 59px;">
                     <li class="infoItem">
-                        <strong class="infoLabel">장소:</strong>
+                        <strong class="infoLabel">장소 </strong>
                         <div class="infoDesc">{{ content_dict.PLACENM }}</div>
                     </li>
                     <li class="infoItem">
-                        <strong class="infoLabel">공연기간:</strong>
+                        <strong class="infoLabel">공연기간 </strong>
                         <div class="infoDesc">{{ content_dict.PRFPDFROM }} ~ {{ content_dict.PRFPDTO }}</div>
                     </li>
                     <li class="infoItem">
-                        <strong class="infoLabel">공연시간:</strong>
+                        <strong class="infoLabel">공연시간 </strong>
                         <div class="infoDesc">{{ content_dict.PRFRUNTIME }}</div>
                     </li>
                     <li class="infoItem">
-                        <strong class="infoLabel">관람연령:</strong>
+                        <strong class="infoLabel">관람연령 </strong>
                         <div class="infoDesc">{{ content_dict.PRFAGE }}</div>
                     </li>
                     <li class="infoItem">
-                        <strong class="infoLabel">가격:</strong>
-                        <div class="infoDesc">
-                            {% for }
-                        </div>
+                        <strong class="infoLabel">공연장 </strong>
+                        <div class="infoDesc">{{ content_dict.PLACENM }}</div>
+                    </li>
+                    <li class="infoItem">
+                        <strong class="infoLabel">가격 </strong>
+                        <div class="infoDesc">{{ content_dict.PCSEGUIDANCE|safe }}</div>
                     </li>
                 </ul>
+                <form id="reservationForm">
+                    <li class="infoItem">
+                        <strong class="infoLabel">예매처 </strong>
+                        <div class="infoDesc">
+                            {% for site_name, site_url in content_dict.RELATES.items %}
+                                <input type="radio" id="{{ site_name }}" name="site" value="{{ site_url }}">
+                                <label for="{{ site_name }}">{{ site_name }}</label><br>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <div style="margin-left: 83px;"><button type="submit" class="custom-btn" style="width: 200px; height:55px;" onclick="submitForm()">예매하기
+                        <span class="ion-ios-arrow-round-forward"></span></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </section>
+
+<script>
+    function submitForm() {
+        var form = document.getElementById('reservationForm');
+        var selectedSite = form.querySelector('input[name="site"]:checked');
+        
+        if (selectedSite) {
+            window.location.href = selectedSite.value;
+        } else {
+            alert('예매처를 선택해주세요.');
+        }
+    }
+</script>
 {% endblock %}

@@ -187,7 +187,7 @@ def get_boxoffice_rank(dataFrame, current_date, service_key):  # 공연중인 �
     total_df = pd.merge(dataFrame, average_rank_7days, on='PRFID', how='left')
     # total_df=total_df.sort_values('AVG RANK')  # 순위순으로 오름차순 정렬
     final_merge_df = pd.merge(total_df, average_rank_30days, on='PRFID', how='left')
-    final_merge_df=final_merge_df.sort_values(['30DAYS RANK', '7DAYS RANK'])
+    final_merge_df=final_merge_df.sort_values('30DAYS RANK')
 
     
     current_dir = os.path.dirname(__file__)
@@ -199,7 +199,7 @@ def get_boxoffice_rank(dataFrame, current_date, service_key):  # 공연중인 �
     
     save_path = os.path.join(date_folder, f'test_boxof_month_{current_date}.csv')
     
-    total_df.to_csv(save_path, index=False, encoding='utf-8-sig')
+    final_merge_df.to_csv(save_path, index=False, encoding='utf-8-sig')
     
     top10_save_path = os.path.join(date_folder, f'top10_list_{current_date}.csv')
     top_10_df = final_merge_df[final_merge_df['30DAYS RANK'].notna()].head(10)
@@ -293,14 +293,16 @@ def job():
     place_names=boxof_detail_df['PLACENM'].to_list()
     hall_detail_info=get_hall_info(boxof_detail_df, place_names,current_date, service_key)
 
-
-
+ing_musical_df=pd.read_csv(r'C:\Users\user\Desktop\django_project2-1\myweb\data\data_20240808\all_detail_list_20240808.csv', encoding='utf-8-sig')
+boxof_detail_df, rank_only_df = get_boxoffice_rank(ing_musical_df, current_date, service_key)
+place_names=boxof_detail_df['PLACENM'].to_list()
+hall_detail_info=get_hall_info(boxof_detail_df, place_names,current_date, service_key)
 # job()
 
 # 매일 9시 반에 실행
-schedule.every().day.at("07:00").do(job)
+# schedule.every().day.at("07:00").do(job)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
 
