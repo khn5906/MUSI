@@ -13,7 +13,7 @@ current_date = datetime.now().strftime('%Y%m%d')
 
 def daterange_yield(start_date, d_days):
     for n in range(d_days):
-        yield start_date - timedelta(days=n)  # 값을 반환하면서 for 문 계속 진행
+        yield start_date - timedelta(n)  # 값을 반환하면서 for 문 계속 진행
 
 def get_performance_info(service_key, current_date, pages=10, rows=50):
     performance_list = []
@@ -23,7 +23,6 @@ def get_performance_info(service_key, current_date, pages=10, rows=50):
     days = daterange_yield(start_date, 30)  # 정상 작동시 3개월동안의 공연 정보로 진행하기
 
     for day in days:
-        print('------day:', day, '---------')
         stdate = day.strftime('%Y%m%d')
         for page in range(1, pages + 1):
             # 공연중인 작품들 요청
@@ -49,7 +48,6 @@ def get_performance_info(service_key, current_date, pages=10, rows=50):
                         prfid = item.find('mt20id').text if item.find('mt20id') is not None else 'N/A'
                         awards = item.find('awards').text if item.find('awards') is not None else 'N/A'
                         award_list.append([prfid, awards])
-                    print(f'prfid: {prfid}, genrenm: {genrenm}, awards: {awards}')
                     
     list_column = ['PRFID', 'GENRENM','PRFSTATE']
     award_column = ['PRFID', 'AWARDS']
@@ -61,13 +59,16 @@ def get_performance_info(service_key, current_date, pages=10, rows=50):
     total_df=total_df.drop_duplicates()  # 중복행 제거 (공연중인 뮤지컬 리스트 + 수상내역 연결)
     
     current_dir = os.path.dirname(__file__)
-    data_dir = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
-    os.makedirs(data_dir, exist_ok=True)
+    data_folder = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
+    os.makedirs(data_folder, exist_ok=True)
     
-    save_path = os.path.join(data_dir, f'performance_list_{current_date}.csv')
+    date_folder = os.path.join(data_folder, f'data_{current_date}') # 현재 파일 경로 + /data/data_20240807 날짜별 폴더 생성
+    os.makedirs(date_folder, exist_ok=True)
+    
+    save_path = os.path.join(date_folder, f'performance_list_{current_date}.csv')
+    
     total_df.to_csv(save_path, index=False, encoding='utf-8-sig')
-    print('get performance list: ', total_df)
-    return total_df
+    return total_df;
 
 def get_perf_details(dataFrame, service_key, current_date):
     prfId_list = dataFrame['PRFID'].to_list()  # 공연중인 뮤지컬 작품 리스트
@@ -96,6 +97,7 @@ def get_perf_details(dataFrame, service_key, current_date):
             pcseguidance = item.find('pcseguidance').text if item.find('pcseguidance') is not None else 'N/A'
             poster = item.find('poster').text if item.find('poster') is not None else 'N/A'
             mt10id = item.find('mt10id').text if item.find('mt10id') is not None else 'N/A'
+            fcltynm = item.find('fcltynm').text if item.find('fcltynm') is not None else 'N/A'
             
             styurls = item.find('styurls')
             relates = item.find('relates')
@@ -110,29 +112,36 @@ def get_perf_details(dataFrame, service_key, current_date):
                    for relate in relates.findall('relate')
                 ]
                 
-            total_list.append([mt20id, prfnm, prfpdfrom, prfpdto, prfcast, prfcrew, prfruntime, prfage, entrpsnm, pcseguidance, poster, relate_list, mt10id, styurl_text])
+            total_list.append([mt20id, prfnm, prfpdfrom, prfpdto, prfcast, prfcrew, prfruntime, prfage, entrpsnm, pcseguidance, poster, relate_list, mt10id, fcltynm, styurl_text])
 
-    column_names = ['PRFID', 'PRFNM', 'PRFPDFROM', 'PRFPDTO', 'PRFCAST', 'PRFCREW', 'PRFRUNTIME', 'PRFAGE', 'ENTRPSNM', 'PCSEGUIDANCE', 'POSTER', 'RELATES', 'PLACEID', 'INFO URLS']
+    column_names = ['PRFID', 'PRFNM', 'PRFPDFROM', 'PRFPDTO', 'PRFCAST', 'PRFCREW', 'PRFRUNTIME', 'PRFAGE', 'ENTRPSNM', 'PCSEGUIDANCE', 'POSTER', 'RELATES', 'PLACEID', 'PLACENM' ,'INFO URLS']
     df = pd.DataFrame(total_list, columns=column_names)
     
     current_dir = os.path.dirname(__file__)
-    data_dir = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
-    os.makedirs(data_dir, exist_ok=True)
+    data_folder = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
+    os.makedirs(data_folder, exist_ok=True)
     
-    save_path = os.path.join(data_dir, f'all_detail_list_{current_date}.csv')
+    date_folder = os.path.join(data_folder, f'data_{current_date}') # 현재 파일 경로 + /data/data_20240807 날짜별 폴더 생성
+    os.makedirs(date_folder, exist_ok=True)
+    
+    save_path = os.path.join(date_folder, f'all_detail_list_{current_date}.csv')
+    
     df.to_csv(save_path, index=False, encoding='utf-8-sig')
-    print('완료')
-    return df  # 공연중인 뮤지컬 세부사항 데이터프레임 반환
+    return df;  # 공연중인 뮤지컬 세부사항 데이터프레임 반환
 
+
+#####################################################
+# 공연 순위 가져오기
 def get_boxoffice_rank(dataFrame, current_date, service_key):  # 공연중인 뮤지컬 세부사항 데이터프레임을 받아서 병합
-    boxoffice_rank_list = []
+    boxoffice_rank_list_30 = []
+    boxoffice_rank_list_7 = []
     
     current_date_day = datetime.strptime(current_date, '%Y%m%d')
-    days = daterange_yield(current_date_day, 7)  # current_date: 일주일의 시작일
+    days_30 = daterange_yield(current_date_day, 30)  # 30일 동안의 랭킹 가져오기
     
-    for day in days:
-        print('------day:', day, '---------')
+    for day in days_30:
         date = day.strftime('%Y%m%d')  # 20240701 형태의 날짜로 변환
+        
         url = f"http://kopis.or.kr/openApi/restful/boxoffice?service={service_key}&ststype=week&date={date}"
         res = requests.get(url)
         
@@ -142,45 +151,156 @@ def get_boxoffice_rank(dataFrame, current_date, service_key):  # 공연중인 �
             for item in items:
                 if item.find('cate').text == '뮤지컬':  # 뮤지컬 내에서 높은 순위 순으로 크롤링
                     prfId = item.find('mt20id').text if item.find('mt20id') is not None else 'N/A'  # 공연 id
-                    rnum = item.find('rnum').text if item.find('rnum') is not None else 'N/A'
-                    boxoffice_rank_list.append([int(rnum), prfId])
-            print('크롤링 완료')
-
-    column_names = ['TOTAL RANK', 'PRFID']  # 전체 공연 순위, 공연id
-    df = pd.DataFrame(boxoffice_rank_list, columns=column_names)
-    df['TOTAL RANK'] = pd.to_numeric(df['TOTAL RANK'], errors='coerce') 
+                    rnum = item.find('rnum').text if item.find('rnum') is not None else 'N/A'  # 전체 순위
+                    boxoffice_rank_list_30.append([int(rnum), prfId])
+    print('30일 크롤링 완료')
+            
+    days_7 = daterange_yield(current_date_day, 7)  # 7일 동안의 랭킹 가져오기
+    for day in days_7:
+        date = day.strftime('%Y%m%d')  # 20240701 형태의 날짜로 변환
+        
+        url = f"http://kopis.or.kr/openApi/restful/boxoffice?service={service_key}&ststype=week&date={date}"
+        res = requests.get(url)
+        
+        if res.status_code == 200:  # 정상응답 받았을 경우
+            root = ET.fromstring(res.content)
+            items = root.findall('.//boxof')  # XML 형식의 데이터에서 boxof 태그 모두를 가져오기
+            for item in items:
+                if item.find('cate').text == '뮤지컬':  # 뮤지컬 내에서 높은 순위 순으로 크롤링
+                    prfId = item.find('mt20id').text if item.find('mt20id') is not None else 'N/A'  # 공연 id
+                    rnum = item.find('rnum').text if item.find('rnum') is not None else 'N/A'  # 전체 순위
+                    boxoffice_rank_list_7.append([int(rnum), prfId])
+    print('7일 크롤링 완료')
+            
+    column_names_7 = ['7DAYS RANK', 'PRFID']  # 전체 공연 순위, 공연id
+    df_7days = pd.DataFrame(boxoffice_rank_list_7, columns=column_names_7)
+    df_7days['7DAYS RANK'] = pd.to_numeric(df_7days['7DAYS RANK'], errors='coerce')  # total rank 열을 숫자형으로 다시 전환/ 값이 없으면 nan값으로 두기
     
-    average_rank_df = df.groupby('PRFID', as_index=False)[['TOTAL RANK']].mean().reset_index()
-    average_rank_df.rename(columns={'TOTAL RANK': 'AVG RANK'}, inplace=True)
+    column_names_30 = ['30DAYS RANK', 'PRFID'] 
+    df_30days = pd.DataFrame(boxoffice_rank_list_30, columns=column_names_30)
+    df_30days['30DAYS RANK'] = pd.to_numeric(df_30days['30DAYS RANK'], errors='coerce')  # total rank 열을 숫자형으로 다시 전환/ 값이 없으면 nan값으로 두기
+    
+    average_rank_7days = df_7days.groupby('PRFID')[['7DAYS RANK']].mean().reset_index()
+    average_rank_30days = df_30days.groupby('PRFID')[['30DAYS RANK']].mean().reset_index()
     
     # 디테일 공연 정보와 병합
-    total_df = pd.merge(dataFrame, average_rank_df, on='PRFID', how='left')
-    total_df=total_df.sort_values('AVG RANK')  # 순위순으로 오름차순 정렬
+    total_df = pd.merge(dataFrame, average_rank_7days, on='PRFID', how='left')
+    # total_df=total_df.sort_values('AVG RANK')  # 순위순으로 오름차순 정렬
+    final_merge_df = pd.merge(total_df, average_rank_30days, on='PRFID', how='left')
+    final_merge_df=final_merge_df.sort_values(['30DAYS RANK', '7DAYS RANK'])
+
     
     current_dir = os.path.dirname(__file__)
-    data_dir = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
-    os.makedirs(data_dir, exist_ok=True)
+    data_folder = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
+    os.makedirs(data_folder, exist_ok=True)
     
-    save_path = os.path.join(data_dir, f'final_musical_detail_{current_date}.csv')
+    date_folder = os.path.join(data_folder, f'data_{current_date}') # 현재 파일 경로 + /data/data_20240807 날짜별 폴더 생성
+    os.makedirs(date_folder, exist_ok=True)
+    
+    save_path = os.path.join(date_folder, f'test_boxof_month_{current_date}.csv')
+    
     total_df.to_csv(save_path, index=False, encoding='utf-8-sig')
     
-    print('완료')
-    current_dir = os.path.dirname(__file__)
-    data_dir = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
-    os.makedirs(data_dir, exist_ok=True)
-    
-    top10_save_path = os.path.join(data_dir, f'musical_top10_{current_date}.csv')
-    top_10_df = total_df[total_df['AVG RANK'].notna()].head(10)
-    top_10_df['AVG RANK_DESC']=(top_10_df.iloc[-1,-1]+top_10_df.iloc[0, -1])-top_10_df['AVG RANK']
+    top10_save_path = os.path.join(date_folder, f'top10_list_{current_date}.csv')
+    top_10_df = final_merge_df[final_merge_df['30DAYS RANK'].notna()].head(10)
+    top_10_df['AVG RANK_DESC']=(top_10_df.iloc[-1,-1]+top_10_df.iloc[0, -1])-top_10_df['30DAYS RANK']
     top_10_df.to_csv(top10_save_path, index=False, encoding='utf-8-sig')
     
     return total_df, top_10_df;
+
+
+#############################################
+# 공연시설 지역코드 가져오기
+def get_hall_info(dataFrame, place_names, current_date, service_key):
+    pages=15
+    rows=30
+    place_list=[]
+    
+    for place_name in place_names:
+        for page in range(pages): 
+            fclty_url=f'http://www.kopis.or.kr/openApi/restful/prfplc?service={service_key}&cpage={page}&rows={rows}&\
+                shprfnmfct={place_name}'
+            
+            res=requests.get(fclty_url)
+            
+            if res.status_code == 200: # 정상 응답 받았을 경우
+                root=ET.fromstring(res.content)
+                items=root.findall('.//db')
+               
+                if items is not None:
+                    for item in items:
+                        place_id=item.find('mt10id').text if item.find('mt10id').text is not None else 'N/A'
+                        place_name=item.find('fcltynm').text if item.find('fcltynm').text is not None else 'N/A'
+                        sido_code=item.find('sidonm').text if item.find('sidonm').text is not None else 'N/A'
+                        gugun_code=item.find('gugunnm').text if item.find('gugunnm').text is not None else 'N/A'
+                        place_list.append([place_id, place_name, sido_code, gugun_code])
+        
+    column_names=['PLACEID','PLACENM','SI DO','GU GUN']
+    df=pd.DataFrame(place_list, columns=column_names)
+    total_df=pd.merge(dataFrame, df, on='PLACEID', how='left')  
+    place_ids=total_df['PLACEID'].to_list()
+    
+    place_details=[]
+    for placeId in place_ids:
+        place_url = f'http://www.kopis.or.kr/openApi/restful/prfplc/{placeId}?service={service_key}'
+        
+        place_res=requests.get(place_url)
+        if place_res.status_code == 200:
+            root=ET.fromstring(place_res.content)
+            item=root.find('.//db')
+            
+            if item is not None:
+                address=item.find('adres').text if item.find('adres').text is not None else 'N/A'
+                telno=item.find('telno').text if item.find('telno').text is not None else 'N/A'
+                relateurl=item.find('relateurl').text if item.find('relateurl').text is not None else 'N/A'
+                restaurant=item.find('restaurant') if item.find('restaurant') is not None else 'N/A'
+                cafe=item.find('cafe') if item.find('cafe') is not None else 'N/A'
+                store=item.find('store') if item.find('store') is not None else 'N/A'
+                nolibang=item.find('nolibang') if item.find('nolibang') is not None else 'N/A'
+                parkbarrier=item.find('parkbarrier') if item.find('parkbarrier') is not None else 'N/A'
+                restbarrier=item.find('restbarrier') if item.find('restbarrier') is not None else 'N/A'
+                elevbarrier=item.find('elevbarrier') if item.find('elevbarrier') is not None else 'N/A'
+                parkinglot=item.find('parkinglot') if item.find('parkinglot') is not None else 'N/A'
+                place_details.append([placeId, address, telno, relateurl, restaurant, cafe, 
+                                      store, nolibang, parkbarrier, restbarrier,
+                                      elevbarrier, parkinglot])
+    column_names=['PLACEID','ADRES','TELNO','RELATE URL','RESTAURANT','CAFE','STORE','NOLIBANG','PARK BARRIER','REST BARRIER',
+                  'ELEV BARRIER','PARKINGLOT']
+    detail_df=pd.DataFrame(place_details, columns=column_names)
+    merged_df=pd.merge(total_df, detail_df, on='PLACEID', how='left')
+    merged_df=merged_df.drop_duplicates()
+    
+    # 폴더에 저장
+    current_dir = os.path.dirname(__file__)
+    data_folder = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
+    os.makedirs(data_folder, exist_ok=True)
+    
+    date_folder = os.path.join(data_folder, f'data_{current_date}') # 현재 파일 경로 + /data/data_20240807 날짜별 폴더 생성
+    os.makedirs(date_folder, exist_ok=True)
+    
+    save_path = os.path.join(date_folder, f'final_fclty_detail_{current_date}.csv') # 기존의 파일에 엎기
+    
+    merged_df.to_csv(save_path, encoding='utf-8-sig', index=False)
+    return total_df;
+
+
 
 def job():
     current_date = datetime.now().strftime('%Y%m%d')
     all_performance_df = get_performance_info(service_key, current_date)
     ing_musical_df = get_perf_details(all_performance_df, service_key, current_date)
-    final_detail_df, rank_only_df = get_boxoffice_rank(ing_musical_df, current_date, service_key)
-    return final_detail_df, rank_only_df;
+    boxof_detail_df, rank_only_df = get_boxoffice_rank(ing_musical_df, current_date, service_key)
+    place_names=boxof_detail_df['PLACENM'].to_list()
+    hall_detail_info=get_hall_info(boxof_detail_df, place_names,current_date, service_key)
 
-job()
+
+
+# job()
+
+# 매일 9시 반에 실행
+schedule.every().day.at("07:00").do(job)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
+

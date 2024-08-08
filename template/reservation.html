@@ -1,0 +1,100 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}reservation{% endblock %}
+
+{% block style %}
+<style>
+    .productWrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .productMain {
+        flex: 1 1 50%;
+    }
+    .productSide {
+        flex: 1 1 50%;
+        padding-left: 20px;
+    }
+    .posterBoxImage {
+        width: 80%;
+    }
+    .info {
+        list-style: none;
+        padding: 0;
+    }
+    .infoItem {
+        margin-bottom: 20px;
+        display: inline-flex;
+        width: 100%;
+    }
+    .infoLabel {
+        font-weight: bold;
+        font-size: 18px; 
+        width: 90px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="ftco-section">    
+    <div class="container">
+        <div class="leftWingWrapper">
+            <ul></ul>
+        </div>
+        <div class="productWrapper">
+            <div class="productMain">
+                <div class="productMainTop">
+                    <div class="summary">
+                        <div class="summaryTop">
+                            <div class="tag">
+                                <h2 class="prfnm">{{ content_dict.PRFNM }}</h2>
+                                <p class="prdTitleSmall"></p>
+                            </div>
+                            <div class="prdSection">
+                                <div class="tagText">
+                                    <span>뮤지컬</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="summaryBody">
+                            <div class="posterBox">
+                                <div class="posterBoxTop">
+                                    <img class="posterBoxImage" src="{{ content_dict.POSTER }}" alt="Poster Image"> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="productSide" style="color:black; margin-top:150px;">
+                <ul class="info">
+                    <li class="infoItem">
+                        <strong class="infoLabel">장소:</strong>
+                        <div class="infoDesc">{{ content_dict.PLACENM }}</div>
+                    </li>
+                    <li class="infoItem">
+                        <strong class="infoLabel">공연기간:</strong>
+                        <div class="infoDesc">{{ content_dict.PRFPDFROM }} ~ {{ content_dict.PRFPDTO }}</div>
+                    </li>
+                    <li class="infoItem">
+                        <strong class="infoLabel">공연시간:</strong>
+                        <div class="infoDesc">{{ content_dict.PRFRUNTIME }}</div>
+                    </li>
+                    <li class="infoItem">
+                        <strong class="infoLabel">관람연령:</strong>
+                        <div class="infoDesc">{{ content_dict.PRFAGE }}</div>
+                    </li>
+                    <li class="infoItem">
+                        <strong class="infoLabel">가격:</strong>
+                        <div class="infoDesc">
+                            {% for }
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

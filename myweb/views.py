@@ -9,11 +9,28 @@ from django.core.mail import EmailMessage
 from django.shortcuts import render
 from django.conf import settings
 import logging
+import pandas as pd
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
+current_date = datetime.now().strftime('%Y%m%d')
 
 def home(request):
-    return render(request, 'home.html')
+    df=pd.read_csv(f'myweb/data/data_{current_date}/top10_list_{current_date}.csv', encoding='utf-8-sig')
+    df['POSTER']=df['POSTER'].apply(lambda x : x[4:])
+    df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x if x.startswith('://') else x)
+    
+    rank_df=df[['PRFID','PRFNM','POSTER']]
+    # print(rank_df['POSTER'])
+    rank_list=rank_df.values.tolist()
+    print('------------------')
+    print(rank_list)
+    # [poster, name, prfid] 리스트에 넣기
+    
+    content={
+        'rank_list':rank_list,
+    }
+    return render(request, 'home.html', content)
 
 def createAccount(request):  #회원가입
     if request.method == 'GET':
@@ -126,7 +143,49 @@ def contact(request):
         msg += "location.href='http://localhost:8000/';";
         msg += "</script>";
         return HttpResponse(msg)
+    
+def tableau_musi(request):
+    return render(request, 'tableau_musi.html');
 
 def story(request):
+    file_path=f'myweb/data/data_{current_date}/final_musical_detail_{current_date}.csv'
+    df=pd.read_csv(file_path, encoding='utf-8-sig')
     return render(request, 'story.html');
 
+
+import pandas as pd
+from datetime import datetime, timedelta
+from django.shortcuts import render
+
+def reservation(request, prfid):
+    current_date = datetime.now().strftime('%Y%m%d')
+    
+    def read_and_process_file(date_str):
+        df = pd.read_csv(f'myweb/data/data_{date_str}/final_musical_detail_{date_str}.csv', encoding='utf-8-sig')
+        df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
+        return df
+    
+    try:
+        df = read_and_process_file(current_date)
+    except Exception as e:
+        print(f'예외발생: {e}')
+        yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
+        df = read_and_process_file(yesterday)
+    
+    ids = df['PRFID'].tolist()
+    prfid_idx = next((idx for idx, id in enumerate(ids) if prfid == id), None)
+    
+    if prfid_idx is not None:
+        rlt_list = df.iloc[prfid_idx, :].tolist()
+        col_list = df.columns.tolist()
+        
+        content_dict = {col: rlt for col, rlt in zip(col_list, rlt_list)}
+        
+        content = {
+            'content_dict': content_dict,
+        }
+        print('----------------')
+        print(content_dict)
+        return render(request, 'reservation.html', content)
+    else:
+        return render(request, 'error.html', {'message': 'Requested PRFID not found'})
