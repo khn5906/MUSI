@@ -77,23 +77,23 @@ def myinfo(request):
         if request.method == 'GET':
             return render(request, 'registration/myinfo.html', content)
         
-        else: # POST 로 접근
-            origin = request.POST['origin']
+        else: # POST 로 접근            
+            origin = request.POST['origin']            
 
             # check_password(평문, 해쉬된암호)
-            if check_password(origin, user.password):
-                password = request.POST.get('pw1')
+            if check_password(origin, user.password):          
+                password = request.POST.get('pwd1')            
                 userInfo.set_password(password)
-
+                userInfo.save()
                 msg = "<script>";
-                msg += "alert('회원정보 수정이 완료되었습니다. 다시 로그인 하세요.');";
+                msg += "alert('회원정보 수정이 완료되었습니다. 다시 로그인 해주세요.');";
                 msg += "location.href='http://localhost:8000/login/';";
                 msg += "</script>";
-                return HttpResponse(msg);
+                return HttpResponse(msg);     
             else:
                 msg = "<script>";
                 msg += "alert('비밀번호가 틀려 회원정보를 수정 할 수 없습니다.');";
-                msg += "location.href='http://localhost:8000/login/';";
+                msg += "location.href='http://localhost:8000/myinfo/';";
                 msg += "</script>";
                 return HttpResponse(msg);
     else:
@@ -102,7 +102,19 @@ def myinfo(request):
         msg += "location.href='/account/login';";
         msg += "</script>";
         return HttpResponse(msg);
+    
+def myinfoDel(request):
+    
+    User.objects.get(username = request.user.username).delete();
+    # 사용자 정보를 삭제합니다.
+    User.delete()
 
+    msg = "<script>";
+    msg += "alert('회원정보를 삭제했습니다.');";
+    msg += 'location.href="http://localhost:8000/home/";';
+    msg += "</script>";
+    return HttpResponse(msg);
+    
 def contact(request):
     
     if request.method == 'GET':
