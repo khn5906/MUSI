@@ -13,7 +13,7 @@
 		<title>{% block title %}home{% endblock %}</title>
 		
 		<link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Anton&family=Do+Hyeon&family=IBM+Plex+Sans+KR&family=Nanum+Gothic&family=Noto+Serif+KR:wght@400..500&display=swap" rel="stylesheet">	
+		<!-- <link href="https://fonts.googleapis.com/css2?family=Anton&family=Do+Hyeon&family=IBM+Plex+Sans+KR&family=Nanum+Gothic&family=Noto+Serif+KR:wght@400..500&display=swap" rel="stylesheet">	 -->
 		<link rel="stylesheet" href="{% static 'css/open-iconic-bootstrap.min.css' %}">
 		<link rel="stylesheet" href="{% static 'css/animate.css' %}">
 		<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
@@ -31,17 +31,9 @@
 
 		<style>
 			body {
-				font-family: "Rubik", 'Nanum Gothic' !important;
+				font-family: "Rubik" !important;
 				font-weight: 400;}
 
-			/* 한글을 위한 폰트 적용 */
-			@font-face {
-				font-family: 'IBM Plex Sans KR';
-				src: url('https://fonts.gstatic.com/s/notoserifkr/v13/tQSH8OwwWzgoFYkVwWsm0klCi7VdZ9KxYmgC3ckgFaRtlGvTzY5IkUu5Jw.woff2') format('woff2');
-				font-style: normal;
-				unicode-range: U+AC00-D7AF; /* 한글 범위 */
-			}
-	
 
 			.video-container {
 				position: absolute;
@@ -232,7 +224,7 @@
 
 			.depth_bg {
 			position:fixed;   
-			z-index: 10;
+			z-index: 5;
 			width: 100%;
             background-color: #b6b6b6 !important;
             height: 0px;
@@ -342,7 +334,7 @@
 			<div class="col-md-12 heading-section text-center ftco-animate">
 			  <span class="subheading">musical</span>
 			  <h2 class="mb-4">What's ON</h2>
-			  <p style="color:#4e555b">상영중인 뮤지컬 공연에 대한 모든 것!</p>			  
+			  <p style="color:#4e555b" class="font-korean">상영중인 뮤지컬 공연에 대한 모든 것!</p>			  
 			  <a href="http://localhost:8000/story/" class="square-button">MORE <span class="ion-ios-arrow-round-forward"></span></a>
 			</div>
 		  </div>

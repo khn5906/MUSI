@@ -31,7 +31,7 @@
 {% block content %}
 
 
-        <section class="ftco-section contact-section ftco-no-pb" data-section="sign" style="height:100vh; margin-top:100px;">            
+        <section class="ftco-section contact-section ftco-no-pb" data-section="sign" style="padding-top: 300px; margin-bottom:300px;">            
             <div class="container" style="width:30% !important;">      
                 <div class="auth-box row">
                     <div class="align-self-stretch box p-5 text-center">
@@ -42,7 +42,7 @@
                         <form method="post" name="frm1" class="mt-4"> {% csrf_token %}
                             <div class="form-group">
                                 <label class="text-dark" >E-mail</label>
-                                <input class="form-control" name="username" type="text" placeholder="Enter your username">
+                                <input class="form-control" name="username" type="email" placeholder="Enter your username">
                             </div>
 
                             <div class="form-group">

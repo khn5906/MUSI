@@ -68,7 +68,40 @@ def logout(request):  #로그아웃
     return render(request, "registration/logged_out.html");
 
 def myinfo(request):
-    return render(request, "registration/myinfo.html");
+    user = request.user;
+    userInfo = User.objects.get(username=user.username);
+    content = {
+        'userInfo':userInfo
+    }
+    if user.is_active :
+        if request.method == 'GET':
+            return render(request, 'registration/myinfo.html', content)
+        
+        else: # POST 로 접근
+            origin = request.POST['origin']
+
+            # check_password(평문, 해쉬된암호)
+            if check_password(origin, user.password):
+                password = request.POST.get('pw1')
+                userInfo.set_password(password)
+
+                msg = "<script>";
+                msg += "alert('회원정보 수정이 완료되었습니다. 다시 로그인 하세요.');";
+                msg += "location.href='http://localhost:8000/login/';";
+                msg += "</script>";
+                return HttpResponse(msg);
+            else:
+                msg = "<script>";
+                msg += "alert('비밀번호가 틀려 회원정보를 수정 할 수 없습니다.');";
+                msg += "location.href='http://localhost:8000/login/';";
+                msg += "</script>";
+                return HttpResponse(msg);
+    else:
+        msg = "<script>";
+        msg += "alert('로그인이 되어 있지 않습니다. 로그인 후 사용하세요.');";
+        msg += "location.href='/account/login';";
+        msg += "</script>";
+        return HttpResponse(msg);
 
 def contact(request):
     
@@ -102,7 +135,14 @@ def contact(request):
             )
 
             email_subject2 = f"[MUSI] {name}님, 문의를 잘 접수하였습니다."
-            email_body2 = f"{name}님, 안녕하세요.\n\n문의해 주셔서 감사합니다.\n고객님의 문의를 잘 접수하였습니다.\n최대한 빠른 시일 내에 답변드리겠습니다.\n\n MUSI 드림"
+            email_body2 = (
+                f"{name}님, 안녕하세요.\n\n"
+                "문의해 주셔서 감사합니다.\n"
+                "고객님의 문의를 잘 접수하였습니다.\n"
+                "최대한 빠른 시일 내에 답변드리겠습니다.\n\n"
+                "MUSI 드림"
+                " ----------------------------------------------------\n\n"
+                f"<문의내용>\n제목: {subject}\n내용:\n{message}")
             email_to_cos = EmailMessage(
                 email_subject2,  
                 email_body2,     
