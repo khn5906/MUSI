@@ -11,7 +11,37 @@
 {% block content %}
 <section class="ftco-section">	
 	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
+		<h1>Analysis Results</h1>
+
+    	{% if error %}
+        <p>{{ error }}</p>
+    	{% else %}
+        <h2>Selected Groups: {{ selected_groups|join:", " }}</h2>
+
+        <h3>Keyword Scores</h3>
+        <ul>
+            {% for keyword, score in keyword_scores.items %}
+                <li>{{ keyword }}: {{ score }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Top Recommendations</h3>
+        <ul>
+            {% for item in top_reviews %}
+                <li>
+                    <h4>{{ item.title }}</h4>
+                    <ul>
+                        {% for review in item.reviews %}
+                            <li>
+                                <strong>{{ review.title }}</strong>: {{ review.review }} (Empathy: {{ review.empathy }})
+                                <a href="{{ review.url }}">Read more</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+		{% endif %}
+        </ul>
 	</div>
 </section>
 <section class="ftco-section">	
