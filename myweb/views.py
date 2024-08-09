@@ -15,16 +15,27 @@ from datetime import datetime, timedelta
 logger = logging.getLogger(__name__)
 current_date = datetime.now().strftime('%Y%m%d')
 
+def read_and_process_file(date_str, file_path):
+        path=f'myweb/data/data_{date_str}/'
+        path+=file_path
+        df = pd.read_csv(path, encoding='utf-8-sig')
+        df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
+        return df;
+
+
 def home(request):
-    df=pd.read_csv(f'myweb/data/data_{current_date}/top10_list_{current_date}.csv', encoding='utf-8-sig')
-    df['POSTER']=df['POSTER'].apply(lambda x : x[4:])
-    df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x if x.startswith('://') else x)
+    try:
+        file_path=f'top10_list_{current_date}.csv'
+        df= read_and_process_file(current_date, file_path)
+    
+    except Exception as e:
+        print(f'예외발생: {e}')
+        yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
+        file_path=f'final_musical_detail_{yesterday}.csv'
+        df = read_and_process_file(yesterday, file_path)
     
     rank_df=df[['PRFID','PRFNM','POSTER']]
-    # print(rank_df['POSTER'])
     rank_list=rank_df.values.tolist()
-    print('------------------')
-    print(rank_list)
     # [poster, name, prfid] 리스트에 넣기
     
     content={
@@ -160,18 +171,15 @@ from django.shortcuts import render
 def reservation(request, prfid):
     current_date = datetime.now().strftime('%Y%m%d')
     
-    def read_and_process_file(date_str):
-        df = pd.read_csv(f'myweb/data/data_{date_str}/final_musical_detail_{date_str}.csv', encoding='utf-8-sig')
-        df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
-        return df
-    
     try:
-        df = read_and_process_file(current_date)
+        file_path=f'final_fclty_detail_{current_date}.csv'
+        df = read_and_process_file(current_date, file_path)
         
     except Exception as e:
         print(f'예외발생: {e}')
         yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
-        df = read_and_process_file(yesterday)
+        file_path=f'final_fclty_detail_{yesterday}.csv'
+        df = read_and_process_file(yesterday, file_path)
     
     ids = df['PRFID'].tolist()
     prfid_idx = next((idx for idx, id in enumerate(ids) if prfid == id), None)
@@ -184,6 +192,10 @@ def reservation(request, prfid):
         content_dict['PCSEGUIDANCE']=content_dict.get('PCSEGUIDANCE').replace(', ', '<br>')
         
         content_dict['RELATES'] = ast.literal_eval(content_dict['RELATES'])  # ast 모듈로 텍스트를 리스트로 변환
+        content_dict['INFO_URLS'] = ast.literal_eval(content_dict['INFO URLS'])
+        del content_dict['INFO URLS']
+        content_dict['INFO_URLS'] = [url for url in content_dict['INFO_URLS']]
+        
         url_sites=content_dict['RELATES']
         
         content_dict['RELATES'] = { site: url for site, url in url_sites }

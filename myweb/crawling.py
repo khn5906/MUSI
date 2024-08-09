@@ -253,6 +253,7 @@ def get_hall_info(dataFrame, place_names, current_date, service_key):
                 address=item.find('adres').text if item.find('adres').text is not None else 'N/A'
                 telno=item.find('telno').text if item.find('telno').text is not None else 'N/A'
                 relateurl=item.find('relateurl').text if item.find('relateurl').text is not None else 'N/A'
+                print('relate_url:', relateurl)
                 restaurant=item.find('restaurant') if item.find('restaurant') is not None else 'N/A'
                 cafe=item.find('cafe') if item.find('cafe') is not None else 'N/A'
                 store=item.find('store') if item.find('store') is not None else 'N/A'
@@ -268,7 +269,6 @@ def get_hall_info(dataFrame, place_names, current_date, service_key):
                   'ELEV BARRIER','PARKINGLOT']
     detail_df=pd.DataFrame(place_details, columns=column_names)
     merged_df=pd.merge(total_df, detail_df, on='PLACEID', how='left')
-    merged_df=merged_df.drop_duplicates()
     
     # 폴더에 저장
     current_dir = os.path.dirname(__file__)
@@ -281,6 +281,9 @@ def get_hall_info(dataFrame, place_names, current_date, service_key):
     save_path = os.path.join(date_folder, f'final_fclty_detail_{current_date}.csv') # 기존의 파일에 엎기
     
     merged_df.to_csv(save_path, encoding='utf-8-sig', index=False)
+    result_df=pd.read_csv(save_path, encoding='utf-8-sig')
+    result_df=result_df.drop_duplicates()
+    result_df.to_csv(save_path, encoding='utf-8-sig', index=False)
     return total_df;
 
 
@@ -293,16 +296,20 @@ def job():
     place_names=boxof_detail_df['PLACENM'].to_list()
     hall_detail_info=get_hall_info(boxof_detail_df, place_names,current_date, service_key)
 
-ing_musical_df=pd.read_csv(r'C:\Users\user\Desktop\django_project2-1\myweb\data\data_20240808\all_detail_list_20240808.csv', encoding='utf-8-sig')
-boxof_detail_df, rank_only_df = get_boxoffice_rank(ing_musical_df, current_date, service_key)
-place_names=boxof_detail_df['PLACENM'].to_list()
-hall_detail_info=get_hall_info(boxof_detail_df, place_names,current_date, service_key)
-# job()
+
+path=r'C:\Users\user\Desktop\django_project2-1\myweb\data\data_20240809\test_boxof_month_20240809.csv'
+df=pd.read_csv(path, encoding='utf-8-sig')
+place_names=df['PLACENM'].to_list()
+hall_detail_info=get_hall_info(df, place_names,current_date, service_key)
+print('완료')
+
+
+job()
 
 # 매일 9시 반에 실행
-# schedule.every().day.at("07:00").do(job)
+schedule.every().day.at("19:10").do(job)
 
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1)
+while True:
+    schedule.run_pending()
+    time.sleep(1)
 
