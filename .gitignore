@@ -4,3 +4,4 @@
 /analysis/migrations/__pycache__
 /myweb/__pycache__
 /myweb/migrations/__pycache__
+db.sqlite3
