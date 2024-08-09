@@ -1,3 +1,6 @@
 
 /analysis/__pycache__
+/analysis/management/commands/__pycache__
 /analysis/migrations/__pycache__
+/myweb/__pycache__
+/myweb/migrations/__pycache__

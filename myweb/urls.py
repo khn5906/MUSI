@@ -23,16 +23,18 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("home/", views.home),
-    path("", views.home),
-    path("story/", views.story),    
+    path("home/", views.home, name='home'),
+    path("", views.home, name='home'),
+    path("story/", views.story, name='story'),    
     path("contact/", views.contact, name='contact'),      
-    path("register/", views.createAccount, name="create"),
-    path("login/", views.login),
+    path("register/", views.createAccount, name="register"),
+    path("login/", views.login, name='login'),
     path("logout/", views.logout, name='logout'),
-    path("myinfo/", views.myinfo, name='myinfo'),    
+    path("myinfo/", views.myinfo, name='myinfo'), 
+    path('myinfoDel/', views.myinfoDel, name='delete'),   
     path("analysis/", include('analysis.urls')),
-    path("tableau_musi/", views.tableau_musi)
+    path("tableau_musi/", views.tableau_musi, name='tableau_musi'),
+    
 ]
 
 if settings.DEBUG:
