@@ -15,16 +15,27 @@ from datetime import datetime, timedelta
 logger = logging.getLogger(__name__)
 current_date = datetime.now().strftime('%Y%m%d')
 
+def read_and_process_file(date_str, file_path):
+        path=f'myweb/data/data_{date_str}/'
+        path+=file_path
+        df = pd.read_csv(path, encoding='utf-8-sig')
+        df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
+        return df;
+
+
 def home(request):
-    df=pd.read_csv(f'myweb/data/data_{current_date}/top10_list_{current_date}.csv', encoding='utf-8-sig')
-    df['POSTER']=df['POSTER'].apply(lambda x : x[4:])
-    df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x if x.startswith('://') else x)
+    try:
+        file_path=f'top10_list_{current_date}.csv'
+        df= read_and_process_file(current_date, file_path)
+    
+    except Exception as e:
+        print(f'예외발생: {e}')
+        yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
+        file_path=f'final_musical_detail_{yesterday}.csv'
+        df = read_and_process_file(yesterday, file_path)
     
     rank_df=df[['PRFID','PRFNM','POSTER']]
-    # print(rank_df['POSTER'])
     rank_list=rank_df.values.tolist()
-    print('------------------')
-    print(rank_list)
     # [poster, name, prfid] 리스트에 넣기
     
     content={
@@ -43,13 +54,13 @@ def createAccount(request):  #회원가입
             User.objects.create_user(username=username, password=password)
             msg = "<script>";
             msg += "alert('회원가입 되었습니다.');";
-            msg += "location.href='http://localhost:8000/login/';";
+            msg += "location.href='/login/';";
             msg += "</script>";
             return HttpResponse(msg);
         except:
             msg = "<script>";
             msg += "alert('같은 아이디가 존재합니다. 다시 가입하세요.');";
-            msg += "location.href='http://localhost:8000/register/';";
+            msg += "location.href='/register/';";
             msg += "</script>";
             return HttpResponse(msg);
 
@@ -69,14 +80,14 @@ def login(request):  #로그인
             
             msg = "<script>";
             msg += "alert('로그인 되었습니다.');";
-            msg += "location.href='http://localhost:8000/home/';";
+            msg += "location.href='/home/';";
             msg += "</script>";
             return HttpResponse(msg);
         
         else:
             msg = "<script>";
             msg += "alert('로그인 아이디/비밀번호가 틀립니다. 다시 로그인 하세요.');";
-            msg += "location.href='http://localhost:8000/login/';";
+            msg += "location.href='/login/';";
             msg += "</script>";
             return HttpResponse(msg);
 
@@ -85,8 +96,51 @@ def logout(request):  #로그아웃
     return render(request, "registration/logged_out.html");
 
 def myinfo(request):
-    return render(request, "registration/myinfo.html");
+    user = request.user;
+        
+    if user.is_active :
+        if request.method == 'GET':
+            userInfo = User.objects.get(username=user.username);            
+            content = {
+            'userInfo':userInfo    }
+            return render(request, 'registration/myinfo.html', content)
+        
+        else: # POST 로 접근            
+            origin = request.POST['origin']            
 
+            # check_password(평문, 해쉬된암호)
+            if check_password(origin, user.password):          
+                password = request.POST.get('pwd1')            
+                userInfo.set_password(password)
+                userInfo.save()
+                msg = "<script>";
+                msg += "alert('회원정보 수정이 완료되었습니다. 다시 로그인 해주세요.');";
+                msg += "location.href='/login/';";
+                msg += "</script>";
+                return HttpResponse(msg);     
+            else:
+                msg = "<script>";
+                msg += "alert('비밀번호가 틀려 회원정보를 수정 할 수 없습니다.');";
+                msg += "location.href='/myinfo/';";
+                msg += "</script>";
+                return HttpResponse(msg);
+    else:
+        msg = "<script>";
+        msg += "alert('회원탈퇴가 완료되었습니다. 다음에 또 뵙겠습니다♥');";
+        msg += "location.href='/home';";
+        msg += "</script>";
+        return HttpResponse(msg);
+    
+def myinfoDel(request):    
+    User.objects.get(username = request.user.username).delete();
+    # 사용자 정보를 삭제합니다.
+    User.delete()
+    msg = "<script>";
+    msg += "alert('회원정보를 삭제했습니다.');";
+    msg += 'location.href="/home/";';
+    msg += "</script>";
+    return HttpResponse(msg);
+    
 def contact(request):
     
     if request.method == 'GET':
@@ -101,7 +155,7 @@ def contact(request):
         if (subject == "" or message == "" or name=="" or email==""):
             msg = "<script>";
             msg += "alert('내용을 전부 입력해주세요.');";
-            msg += "location.href='http://localhost:8000/contact';";
+            msg += "location.href='/contact';";
             msg += "</script>";
             return HttpResponse(msg);
     
@@ -119,7 +173,14 @@ def contact(request):
             )
 
             email_subject2 = f"[MUSI] {name}님, 문의를 잘 접수하였습니다."
-            email_body2 = f"{name}님, 안녕하세요.\n\n문의해 주셔서 감사합니다.\n고객님의 문의를 잘 접수하였습니다.\n최대한 빠른 시일 내에 답변드리겠습니다.\n\n MUSI 드림"
+            email_body2 = (
+                f"{name}님, 안녕하세요.\n\n"
+                "문의해 주셔서 감사합니다.\n"
+                "고객님의 문의를 잘 접수하였습니다.\n"
+                "최대한 빠른 시일 내에 답변드리겠습니다.\n\n"
+                "MUSI 드림"
+                " ----------------------------------------------------\n\n"
+                f"<문의내용>\n제목: {subject}\n내용:\n{message}")
             email_to_cos = EmailMessage(
                 email_subject2,  
                 email_body2,     
@@ -134,13 +195,13 @@ def contact(request):
             logger.error(f"Failed to send email to admin: {e}")
             msg = "<script>";
             msg += f"alert('관리자에게 메일 전송을 실패했습니다. 다시 시도해주세요.');";
-            msg += "location.href='http://localhost:8000/contact';";
+            msg += "location.href='/contact';";
             msg += "</script>";
             return HttpResponse(msg)
         
         msg = "<script>";
         msg += "alert('메일전송을 완료했습니다.');";
-        msg += "location.href='http://localhost:8000/';";
+        msg += "location.href='/';";
         msg += "</script>";
         return HttpResponse(msg)
     
@@ -160,18 +221,15 @@ from django.shortcuts import render
 def reservation(request, prfid):
     current_date = datetime.now().strftime('%Y%m%d')
     
-    def read_and_process_file(date_str):
-        df = pd.read_csv(f'myweb/data/data_{date_str}/final_musical_detail_{date_str}.csv', encoding='utf-8-sig')
-        df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
-        return df
-    
     try:
-        df = read_and_process_file(current_date)
+        file_path=f'final_fclty_detail_{current_date}.csv'
+        df = read_and_process_file(current_date, file_path)
         
     except Exception as e:
         print(f'예외발생: {e}')
         yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
-        df = read_and_process_file(yesterday)
+        file_path=f'final_fclty_detail_{yesterday}.csv'
+        df = read_and_process_file(yesterday, file_path)
     
     ids = df['PRFID'].tolist()
     prfid_idx = next((idx for idx, id in enumerate(ids) if prfid == id), None)
@@ -184,6 +242,10 @@ def reservation(request, prfid):
         content_dict['PCSEGUIDANCE']=content_dict.get('PCSEGUIDANCE').replace(', ', '<br>')
         
         content_dict['RELATES'] = ast.literal_eval(content_dict['RELATES'])  # ast 모듈로 텍스트를 리스트로 변환
+        content_dict['INFO_URLS'] = ast.literal_eval(content_dict['INFO URLS'])
+        del content_dict['INFO URLS']
+        content_dict['INFO_URLS'] = [url for url in content_dict['INFO_URLS']]
+        
         url_sites=content_dict['RELATES']
         
         content_dict['RELATES'] = { site: url for site, url in url_sites }
