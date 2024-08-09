@@ -3,9 +3,6 @@
 {% block title %}INFO{% endblock %}
 {% block style %}
 <style>
-    body {
-            font-family: Arial, sans-serif;
-    }
 
   .table-container {
     display: flex;
@@ -28,77 +25,81 @@
 {% block content %}
 <section class="ftco-section">	
 	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-
-  <!-- <script>
-    if ('{{ msg }}'.length > 0) {
-      alert('{{ msg }}');
-    }
-
-    function changePwdBtn(btn){
-      changePwd = document.getElementById("changePwd");
-
-      if (document.querySelector('#changePwd th')) {
-        changePwd.removeChild(th);
-        changePwd.removeChild(td);
-        btn.innerText = "변경";
-        return;
+    <script>
+      function checkpwd() {
+        const pwd1 = document.getElementById('pwd1').value;
+        const pwd2 = document.getElementById('pwd2').value;
+    
+        if (pwd1 !== pwd2) {
+          alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
+          document.getElementById('pwd2').value = '';
+          document.getElementById('pwd2').focus();
+        }
       }
 
-      btn.innerText = "닫기";
-      th = document.createElement("th");
-      th.innerText = "변경할 암호";
-      td = document.createElement("td");
-      td.innerHTML = "<input style='width:250px;' type='password' name='password'>";
+      function pageSubmit() {
+        const form = document.forms['frm1'];
+        const origin = form.origin.value;
+        const pwd1 = form.pwd1.value;
+        const pwd2 = form.pwd2.value;
+    
+        // 빈 값 체크
+        if (origin === '' || pwd1 === '' || pwd2 === '') {
+          alert("모든 필드를 입력해주세요.");
+          return false;  // 기본 폼 제출 동작 막기
+        }
+    
+        // 비밀번호 일치 여부 확인
+        if (pwd1 !== pwd2) {
+          alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
+          return false;  // 기본 폼 제출 동작 막기
+        }
+    
+        form.submit();
+      }
 
-      changePwd.append(th);
-      changePwd.append(td);
-    }
-  </script>
+      function myinfoDel(){
+        if (confirm('정말로 회원 탈퇴 하시겠습니까?')) {
+          location.href='{% url "delete" %}';
+        }
+      }    
+    </script>
 
-  <form method="post" class="container" style="margin-top:50px">{% csrf_token %}
-    <table class="table text-center" style="width:60%;" align="center">
-      <tr>
-        <th>사용자 아이디</th>
-        <td><input type="text" name="username" value="{{ userInfo.username }}" disabled style="width:250px;"></td>
-      </tr>
-      <tr>
-        <th>기존 사용자 암호 <button type='button' onclick="changePwdBtn(this)" class="btn border-secondary">변경</button></th>
-        <td><input type="password" id="pw1" name="origin" style="width:250px;"></td>
-      </tr>
-      <tr id="changePwd">
-      </tr>
-      <tr>
-        <th>이름</th>
-        <td><input type="text" name="first_name" value="{{ userInfo.first_name }}" style="width:250px;"></td>
-      </tr>
-      <tr>
-        <th>성</th>
-        <td><input type="text" name="last_name" value="{{ userInfo.last_name }}" style="width:250px;"></td>
-      </tr>
-      <tr>
-        <th>이메일</th>
-        <td><input type="email" name="email" value="{{ userInfo.email }}" style="width:250px;"></td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          <input type="submit" class="btn btn-warning" value="회원수정" style="width:150px">
-          <input type="reset" class="btn border-secondary" value="취소" style="width:150px">
-          <input type="button" value="회원탈퇴" class="btn border-secondary" onclick="myinfoDel()" style="width:150px">
-          <script>
-            function myinfoDel(){
-              
-            }
-          </script>
-        </td>
-      </tr>
-    </table>
-  </form> -->
-
+    <section class="ftco-section contact-section ftco-no-pb" data-section="sign" style="margin-bottom:150px;">            
+      <div class="container" style="width:30% !important;">      
+          <div class="auth-box row">
+              <div class="align-self-stretch box p-5 text-center">
+                  <div class="text-center">
+                      <h2 class="mt-3">My Info</h2>
+                      <p style="color:#4e555b">변경할 비밀번호를 입력하세요.</p>
+                  </div>
+                  <form method="post" name="frm1" class="mt-4"> {% csrf_token %}
+                      <div class="form-group">
+                          <label class="text-dark" for="username">E-mail</label>
+                          <input class="form-control" name="username" id="username" type="text" value="{{ userInfo.username }}" disabled="True">
+                      </div>
+                      <div class="form-group">
+                        <label class="text-dark" for="origin">Password</label>
+                        <input class="form-control" name="origin" id="origin" type="password" placeholder="Enter new password">
+                    </div>  
+                      <div class="form-group">
+                          <label class="text-dark" for="pwd1">New Password</label>
+                          <input class="form-control" name="pwd1" id="pwd1" type="password" placeholder="Enter new password">
+                      </div>
+                      <div class="form-group">
+                          <label class="text-dark" for="pwd2">Check Password</label>
+                          <input class="form-control" name="pwd2" id="pwd2" onchange="checkpwd()" type="password" placeholder="Enter new password">
+                      </div>
+  
+                      <div class="text-center">
+                          <button class="btn btn-dark btn-block" onclick="pageSubmit()">회원수정</button>
+                          <button type="reset" class="btn btn-dark btn-block">취소</button>
+                          <button class="btn btn-outline-secondary btn-block" onclick="myinfoDel()">회원탈퇴</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+      </section>
+</section>
 {% endblock %}
