@@ -1,0 +1,146 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}reservation{% endblock %}
+
+{% block style %}
+<style>
+    .productWrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .productMain {
+        flex: 1 1 50%;
+    }
+    .posterBox {
+        display: flex;
+        align-items: center; /* 수직 가운데 정렬 */
+    }
+    .posterBoxImage {
+        flex: 1; /* 이미지의 비율을 맞추기 위해 flex-grow 설정 */
+        max-width: 100%; /* 이미지가 부모 요소를 넘지 않도록 */
+        height: auto; /* 이미지의 원본 비율 유지 */
+    }
+    .productSide {
+        flex: 1; /* 제품 설명 영역의 비율을 맞추기 위해 flex-grow 설정 */
+        padding-left: 30px;
+    }
+    .info {
+        list-style: none;
+        padding: 0;
+    }
+    .infoItem {
+        margin-bottom: 20px;
+        display: inline-flex;
+        width: 100%;
+    }
+    .infoLabel {
+        font-weight: bold;
+        font-size: 18px;
+        width: 100px;
+    }
+    .custom-btn {
+        width: 215px;
+        height: 60px;
+        border: none;
+        margin-left: 92px;
+        margin-top: 3px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="ftco-section" style="color:black;">    
+    <div class="container" style="margin-top:100px;">
+        <div class="leftWingWrapper">
+            <ul></ul>
+        </div>
+        <div class="productWrapper">
+            <div class="productTop" style="border-bottom: 1.8px solid #999999;">
+                <div class="productMain">
+                    <div class="productMainTop">
+                        <div class="summary">
+                            <div class="summaryTop">
+                                <h2 class="prfnm" style="font-weight: bold; padding-left: 10px;">[{{ content_dict.PRFNM }}]</h2>
+                                <p class="prdTitleSmall"></p>
+                            </div>
+                        </div>
+                        <div class="summaryBody" style="margin-bottom:118px;">
+                            <div class="posterBox" style="margin-top:40px;">
+                                <img class="posterBoxImage" src="{{ content_dict.POSTER }}" alt="Poster Image"> 
+                                <div class="productSide" style="margin-left:150px;">
+                                    <ul class="info" style="margin-top: 59px; padding-left:0px;">
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">장소 </strong>
+                                            <div class="infoDesc">{{ content_dict.PLACENM_x }}</div>
+                                        </li>
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">공연기간 </strong>
+                                            <div class="infoDesc">{{ content_dict.PRFPDFROM }} ~ {{ content_dict.PRFPDTO }}</div>
+                                        </li>
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">공연시간 </strong>
+                                            <div class="infoDesc">{{ content_dict.PRFRUNTIME }}</div>
+                                        </li>
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">관람연령 </strong>
+                                            <div class="infoDesc">{{ content_dict.PRFAGE }}</div>
+                                        </li>
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">공연장 </strong>
+                                            <div class="infoDesc">{{ content_dict.PLACENM_x }}</div>
+                                        </li>
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">가격 </strong>
+                                            <div class="infoDesc">{{ content_dict.PCSEGUIDANCE|safe }}</div>
+                                        </li>
+                                        <form id="reservationForm">
+                                            <li class="infoItem">
+                                                <strong class="infoLabel">예매처 </strong>
+                                                <div class="infoDesc">
+                                                    {% for site_name, site_url in content_dict.RELATES.items %}
+                                                        <input type="radio" id="{{ site_name }}" name="site" value="{{ site_url }}">
+                                                        <label for="{{ site_name }}">{{ site_name }}</label><br>
+                                                    {% endfor %}
+                                                </div>
+                                            </li>
+                                            <button type="submit" class="custom-btn">
+                                                예매하기
+                                                <span class="ion-ios-arrow-round-forward"></span>
+                                            </button>
+                                        </form>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="productBottom" style="margin-top:160px; margin-bottom:180px;">
+            <img src="{% static 'images/공연소개_1.png' %}" alt="공연소개 이미지" style="display: block; margin: 0 auto; width:80%;">
+            {% for imgurl in content_dict.INFO_URLS %}
+                <img src="{{ imgurl }}" alt="Additional Image" style="display: block; margin: -100px auto; max-width: 100%; height: auto;">
+            {% endfor %}
+            <img src="{% static 'images/api_안내문구.png' %}" alt="무단도용 안내" style="display: block; margin: 0 auto; width:80%;">
+        </div>
+    </div>
+</section>
+
+<script>
+    document.getElementById('reservationForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 기본 폼 제출 동작 방지
+        
+        // 선택된 라디오 버튼 가져오기
+        const selectedSite = document.querySelector('input[name="site"]:checked');
+
+        if (selectedSite) {
+            // 선택된 URL로 리디렉션
+            window.location.href = selectedSite.value;
+        } else {
+            alert('사이트를 선택해주세요.');
+        }
+    });
+</script>
+{% endblock %}
