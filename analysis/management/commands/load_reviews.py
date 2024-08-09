@@ -7,6 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         data = pd.read_csv('review_data.csv')
+        print(data.head())
 
         # 중복값 제거
         data = data.drop_duplicates(subset='review')
