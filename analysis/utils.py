@@ -27,11 +27,23 @@ for casting in actor_df['Casting'].fillna(''):  # NaN 값을 빈 문자열로 �
     keyword_groups['acting'].extend(actors)
 keyword_groups['acting'] = list(set(keyword_groups['acting']))  # 중복 제거
 
+# def load_data():
+#     reviews = Review.objects.filter(label=1)
+#     data = pd.DataFrame(list(reviews.values()))
+#     data = data.drop_duplicates(subset='review')
+#     data = data[data['review'].str.len() >= 10]
+#     return data
+
 def load_data():
-    reviews = Review.objects.filter(label=1)
-    data = pd.DataFrame(list(reviews.values()))
+    # CSV 파일에서 데이터를 불러옵니다.
+    data = pd.read_csv('review_data.csv')
+
+    # 중복값 제거
     data = data.drop_duplicates(subset='review')
+
+    # 리뷰 길이가 10자 이상인 것만 필터링
     data = data[data['review'].str.len() >= 10]
+    
     return data
 
 def preprocess_reviews(data):
@@ -65,33 +77,47 @@ def preprocess_reviews(data):
     return data
 
 def calculate_tfidf(data):
-    grouped = data.groupby('title2')['tokens'].apply(lambda tokens: ' '.join(chain.from_iterable(tokens))).reset_index()
-    grouped['tokens'] = grouped['tokens'].str.replace(' ', '')
-    grouped['tokens'] = grouped['tokens'].str.replace("','", ' ')
-    grouped['tokens'] = grouped['tokens'].str.replace("['", ' ')
-    grouped['tokens'] = grouped['tokens'].str.replace("']", ' ')
-    grouped['tokens'] = grouped['tokens'].str.replace("']['", ' ')
+    try:
+        grouped = data.groupby('title2')['tokens'].apply(lambda tokens: ' '.join(chain.from_iterable(tokens))).reset_index()
+        print("Grouped DataFrame created.")
+        
+        grouped['tokens'] = grouped['tokens'].str.replace(' ', '')
+        grouped['tokens'] = grouped['tokens'].str.replace("','", ' ')
+        grouped['tokens'] = grouped['tokens'].str.replace("['", ' ')
+        grouped['tokens'] = grouped['tokens'].str.replace("']", ' ')
+        grouped['tokens'] = grouped['tokens'].str.replace("']['", ' ')
+        print("Token strings cleaned.")
 
-    tfidf_vectorizer = TfidfVectorizer(vocabulary=[word for group in keyword_groups.values() for word in group])
-    tfidf_matrix = tfidf_vectorizer.fit_transform(grouped['tokens'])
-    tfidf_scores = tfidf_matrix.toarray()
+        vocabulary = [word for group in keyword_groups.values() for word in group]
 
-    group_tfidf_scores = defaultdict(dict)
-    for i, title in enumerate(grouped['title2']):
-        for group_name, keywords in keyword_groups.items():
-            group_score = [tfidf_scores[i][tfidf_vectorizer.vocabulary_[keyword]] for keyword in keywords if keyword in tfidf_vectorizer.vocabulary_]
-            group_tfidf_scores[title][group_name] = sum(group_score) / len(group_score) if group_score else 0
+        tfidf_vectorizer = TfidfVectorizer(vocabulary=vocabulary, lowercase=False)
+        tfidf_matrix = tfidf_vectorizer.fit_transform(grouped['tokens'])
+        print("TF-IDF matrix calculated.")
 
-    group_tfidf_df = pd.DataFrame(group_tfidf_scores).T
-    scaler = StandardScaler()
-    standardized_scores = scaler.fit_transform(group_tfidf_df)
-    standardized_df = pd.DataFrame(standardized_scores, index=group_tfidf_df.index, columns=group_tfidf_df.columns)
+        tfidf_scores = tfidf_matrix.toarray()
 
-    combinations_list = list(combinations(keyword_groups.keys(), 3))
-    combination_scores = {}
+        group_tfidf_scores = defaultdict(dict)
+        for i, title in enumerate(grouped['title2']):
+            for group_name, keywords in keyword_groups.items():
+                group_score = [tfidf_scores[i][tfidf_vectorizer.vocabulary_[keyword]] for keyword in keywords if keyword in tfidf_vectorizer.vocabulary_]
+                group_tfidf_scores[title][group_name] = sum(group_score) / len(group_score) if group_score else 0
 
-    for comb in combinations_list:
-        comb_name = '_'.join(comb)
-        standardized_df[comb_name] = standardized_df[list(comb)].sum(axis=1)
+        group_tfidf_df = pd.DataFrame(group_tfidf_scores).T
+        print("TF-IDF scores DataFrame created:", group_tfidf_df.head())
+        
+        scaler = StandardScaler()
+        standardized_scores = scaler.fit_transform(group_tfidf_df)
+        standardized_df = pd.DataFrame(standardized_scores, index=group_tfidf_df.index, columns=group_tfidf_df.columns)
 
-    return standardized_df
+        combinations_list = list(combinations(keyword_groups.keys(), 3))
+        combination_scores = {}
+
+        for comb in combinations_list:
+            comb_name = '_'.join(comb)
+            standardized_df[comb_name] = standardized_df[list(comb)].sum(axis=1)
+
+        print("Final TF-IDF DataFrame columns:", standardized_df.columns.head())
+        return standardized_df
+    
+    except Exception as e:
+        print(f"An error occurred in calculate_tfidf: {e}")
