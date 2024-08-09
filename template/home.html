@@ -111,7 +111,6 @@
 				transition: background-color 0.3s, color 0.3s, transform 0.3s; /* transform에 대한 전환 추가 */
 				font-size: 16px; /* 기본 글꼴 크기 설정 */
 			}
-			
 
 			.square-button:hover {
 				color: #fff; /* 호버 시 글자 색 변경 */
@@ -265,8 +264,7 @@
 							Analysis
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown2">
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/analysis/analysis/'">Analysis</a>
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/analysis/visualization/'">Visualization</a>
+							<a class="dropdown-item" onclick="document.location.href='{% url 'analysis' %}'">Analysis</a>						
 						</div>
 					</li>
 					<li class="nav-item dropdown mx-3">
@@ -461,8 +459,12 @@
 				</div>
 			</div>
 			
-			<button id="go-button" onclick="document.location.href='http://localhost:8000/analysis/analysis'">GO</button> <!-- 새 버튼 -->
-				
+			<button id="go-button">GO</button> <!-- 새 버튼 -->
+			<form id="hidden-form" method="POST" action="{% url 'analysis' %}" style="display:none;">
+				{% csrf_token %}
+				<input type="hidden" name="selected_texts" id="selected_texts">
+			</form>
+
 		</div>
 
     </section>
@@ -652,6 +654,7 @@
 	<script>
 		document.querySelectorAll('.preference-button').forEach(button => {
 			button.addEventListener('click', () => {
+				
 				const selectedButtons = document.querySelectorAll('.preference-button.select');
 
 				// 만약 이미 세 개의 버튼이 선택되어 있고 새로운 버튼을 선택하려고 한다면 모든 선택을 해제합니다.
@@ -668,13 +671,31 @@
 				if (selectedCount === 3) {
 					document.getElementById('go-button').style.display = 'block';
 					document.getElementById('arrow-button').style.display = 'block'; // 화살표 버튼 보이기										
+
 				} else {
 					document.getElementById('go-button').style.display = 'none';
 					document.getElementById('arrow-button').style.display = 'none'; // 화살표 버튼 숨기기
 					
 				}
+
 			});
 		});
+
+
+		document.getElementById('go-button').addEventListener('click', function() {
+            const selectedButtons = document.querySelectorAll('.preference-button.select');
+            const selectedTexts = [];
+
+            selectedButtons.forEach(btn => {
+                selectedTexts.push(btn.innerText);
+            });
+
+            // 숨겨진 입력 필드에 데이터를 JSON으로 설정
+            document.getElementById('selected_texts').value = selectedTexts.join(',');
+
+            // 폼 제출
+            document.getElementById('hidden-form').submit();
+        });
 
 
 		// 스크롤 이벤트를 감지하여 GO 버튼을 숨기거나 표시하는 함수
@@ -682,16 +703,12 @@
 			document.querySelectorAll('.preference-button.select').forEach(btn => btn.classList.remove('select'));
 			const goButton = document.getElementById('go-button');
 			if (goButton.style.display === 'block') {
-				goButton.style.display = 'none'; // 스크롤 시 GO 버튼 숨기기
-				
-			}
-			
+				goButton.style.display = 'none'; // 스크롤 시 GO 버튼 숨기기				
+			}			
 		}
 
 		// 스크롤 이벤트 리스너 추가
 		window.addEventListener('scroll', handleScroll);
-
-
 
 		function pageSubmit() {
 			const username = frm1.username.value;

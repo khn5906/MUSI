@@ -26,13 +26,13 @@ def createAccount(request):  #회원가입
             User.objects.create_user(username=username, password=password)
             msg = "<script>";
             msg += "alert('회원가입 되었습니다.');";
-            msg += "location.href='http://localhost:8000/login/';";
+            msg += "location.href='/login/';";
             msg += "</script>";
             return HttpResponse(msg);
         except:
             msg = "<script>";
             msg += "alert('같은 아이디가 존재합니다. 다시 가입하세요.');";
-            msg += "location.href='http://localhost:8000/register/';";
+            msg += "location.href='/register/';";
             msg += "</script>";
             return HttpResponse(msg);
 
@@ -52,14 +52,14 @@ def login(request):  #로그인
             
             msg = "<script>";
             msg += "alert('로그인 되었습니다.');";
-            msg += "location.href='http://localhost:8000/home/';";
+            msg += "location.href='/home/';";
             msg += "</script>";
             return HttpResponse(msg);
         
         else:
             msg = "<script>";
             msg += "alert('로그인 아이디/비밀번호가 틀립니다. 다시 로그인 하세요.');";
-            msg += "location.href='http://localhost:8000/login/';";
+            msg += "location.href='/login/';";
             msg += "</script>";
             return HttpResponse(msg);
 
@@ -69,12 +69,12 @@ def logout(request):  #로그아웃
 
 def myinfo(request):
     user = request.user;
-    userInfo = User.objects.get(username=user.username);
-    content = {
-        'userInfo':userInfo
-    }
+        
     if user.is_active :
         if request.method == 'GET':
+            userInfo = User.objects.get(username=user.username);            
+            content = {
+            'userInfo':userInfo    }
             return render(request, 'registration/myinfo.html', content)
         
         else: # POST 로 접근            
@@ -87,31 +87,29 @@ def myinfo(request):
                 userInfo.save()
                 msg = "<script>";
                 msg += "alert('회원정보 수정이 완료되었습니다. 다시 로그인 해주세요.');";
-                msg += "location.href='http://localhost:8000/login/';";
+                msg += "location.href='/login/';";
                 msg += "</script>";
                 return HttpResponse(msg);     
             else:
                 msg = "<script>";
                 msg += "alert('비밀번호가 틀려 회원정보를 수정 할 수 없습니다.');";
-                msg += "location.href='http://localhost:8000/myinfo/';";
+                msg += "location.href='/myinfo/';";
                 msg += "</script>";
                 return HttpResponse(msg);
     else:
         msg = "<script>";
-        msg += "alert('로그인이 되어 있지 않습니다. 로그인 후 사용하세요.');";
-        msg += "location.href='/account/login';";
+        msg += "alert('회원탈퇴가 완료되었습니다. 다음에 또 뵙겠습니다♥');";
+        msg += "location.href='/home';";
         msg += "</script>";
         return HttpResponse(msg);
     
-def myinfoDel(request):
-    
+def myinfoDel(request):    
     User.objects.get(username = request.user.username).delete();
     # 사용자 정보를 삭제합니다.
     User.delete()
-
     msg = "<script>";
     msg += "alert('회원정보를 삭제했습니다.');";
-    msg += 'location.href="http://localhost:8000/home/";';
+    msg += 'location.href="/home/";';
     msg += "</script>";
     return HttpResponse(msg);
     
@@ -129,7 +127,7 @@ def contact(request):
         if (subject == "" or message == "" or name=="" or email==""):
             msg = "<script>";
             msg += "alert('내용을 전부 입력해주세요.');";
-            msg += "location.href='http://localhost:8000/contact';";
+            msg += "location.href='/contact';";
             msg += "</script>";
             return HttpResponse(msg);
     
@@ -169,13 +167,13 @@ def contact(request):
             logger.error(f"Failed to send email to admin: {e}")
             msg = "<script>";
             msg += f"alert('관리자에게 메일 전송을 실패했습니다. 다시 시도해주세요.');";
-            msg += "location.href='http://localhost:8000/contact';";
+            msg += "location.href='/contact';";
             msg += "</script>";
             return HttpResponse(msg)
         
         msg = "<script>";
         msg += "alert('메일전송을 완료했습니다.');";
-        msg += "location.href='http://localhost:8000/';";
+        msg += "location.href='/';";
         msg += "</script>";
         return HttpResponse(msg)
     

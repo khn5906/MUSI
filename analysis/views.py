@@ -6,10 +6,14 @@ import json
 
 def analysis(request):
     if request.method == 'POST':
+        selected_texts = request.POST.get('selected_texts')
+        selected_groups = selected_texts.split(',')  # 문자열을 리스트로 변환
+        print(selected_groups)
+        
         selected_groups = request.POST.getlist('selected_groups')
 
         if len(selected_groups) != 3:
-            return render(request, 'reviews/analysis.html', {'error': '3개의 그룹을 선택해야 합니다.'})
+            return render(request, 'analysis/analysis.html', {'error': '3개의 그룹을 선택해야 합니다.'})
 
         data = load_data()
         data = preprocess_reviews(data)
@@ -32,6 +36,7 @@ def analysis(request):
                     'url': review.url
                 })
             top_reviews.append({'title': title, 'reviews': review_list})
-
         return render(request, 'reviews/analysis.html', {'top_reviews': top_reviews, 'selected_groups': selected_groups, 'keyword_scores': keyword_scores})
+
+        
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
