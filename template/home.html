@@ -212,7 +212,6 @@
 				border: none !important; /* 클릭 시 테두리를 제거 */
 				text-align:left;
 				margin-left: 20 ;
-				
 			}
 
 			/* 네비게이션 바의 드롭다운 항목을 좌우 여백 없이 설정 */
@@ -222,13 +221,13 @@
 			}						
 
 			.depth_bg {
-			position:fixed;   
-			z-index: 5;
-			width: 100%;
-            background-color: #b6b6b6 !important;
-            height: 0px;
-            transition: height 0.3s ease;	
-			opacity: 0.1;			
+				position:fixed;   
+				z-index: 10;
+				width: 100%;
+				background-color: #b6b6b6 !important;
+				height: 0px;
+				transition: height 0.3s ease;	
+				opacity: 0.1;			
         	}
 
 		</style>
@@ -651,97 +650,7 @@
     </section>
 	{% endblock %}
 	
-	<script>
-		document.querySelectorAll('.preference-button').forEach(button => {
-			button.addEventListener('click', () => {
-				
-				const selectedButtons = document.querySelectorAll('.preference-button.select');
-
-				// 만약 이미 세 개의 버튼이 선택되어 있고 새로운 버튼을 선택하려고 한다면 모든 선택을 해제합니다.
-				if (selectedButtons.length === 3 && !button.classList.contains('select')) {
-					selectedButtons.forEach(btn => btn.classList.remove('select'));
-					document.getElementById('arrow-button').style.display = 'none'; // 화살표 버튼 숨기기
-				} else {
-					// 선택된 상태라면 선택을 해제하고, 선택되지 않은 상태라면 선택합니다.
-					button.classList.toggle('select');
-				}
-
-				// 세 개의 버튼이 선택되면 GO 버튼과 화살표 버튼을 표시합니다.
-				const selectedCount = document.querySelectorAll('.preference-button.select').length;
-				if (selectedCount === 3) {
-					document.getElementById('go-button').style.display = 'block';
-					document.getElementById('arrow-button').style.display = 'block'; // 화살표 버튼 보이기										
-
-				} else {
-					document.getElementById('go-button').style.display = 'none';
-					document.getElementById('arrow-button').style.display = 'none'; // 화살표 버튼 숨기기
-					
-				}
-
-			});
-		});
-
-
-		document.getElementById('go-button').addEventListener('click', function() {
-            const selectedButtons = document.querySelectorAll('.preference-button.select');
-            const selectedTexts = [];
-
-            selectedButtons.forEach(btn => {
-                selectedTexts.push(btn.innerText);
-            });
-
-            // 숨겨진 입력 필드에 데이터를 JSON으로 설정
-            document.getElementById('selected_texts').value = selectedTexts.join(',');
-
-            // 폼 제출
-            document.getElementById('hidden-form').submit();
-        });
-
-
-		// 스크롤 이벤트를 감지하여 GO 버튼을 숨기거나 표시하는 함수
-		function handleScroll() {
-			document.querySelectorAll('.preference-button.select').forEach(btn => btn.classList.remove('select'));
-			const goButton = document.getElementById('go-button');
-			if (goButton.style.display === 'block') {
-				goButton.style.display = 'none'; // 스크롤 시 GO 버튼 숨기기				
-			}			
-		}
-
-		// 스크롤 이벤트 리스너 추가
-		window.addEventListener('scroll', handleScroll);
-
-		function pageSubmit() {
-			const username = frm1.username.value;
-			const password = frm1.pwd.value;
-		  
-			// 빈 값 체크
-			if (username === '' || password === '') {
-			  alert("아이디와 비밀번호를 모두 입력해주세요.");
-			  return; // 함수 종료
-			}
-		  
-			frm1.method = "POST";
-			frm1.action = "{% url 'login' %}";
-			frm1.submit();
-		  }
-
-		document.addEventListener('DOMContentLoaded', function() {
-		const navbar = document.querySelector('.navbar.navbar-expand-lg.navbar-dark.ftco_navbar.bg-dark.ftco-navbar-light');
-		const depthBg = document.querySelector('.depth_bg');
 	
-		navbar.addEventListener('mouseover', function() {
-			depthBg.style.height = '250px';
-		});
-	
-		navbar.addEventListener('mouseout', function() {
-			depthBg.style.height = '0px';
-		});
-		});
-
-    </script>
-	
-	
-
 
     <footer class="ftco-footer ftco-section">
       <div class="container">
@@ -788,8 +697,8 @@
             	<div class="block-23 mb-3">
 	              <ul>
 	                <li><span class="icon icon-map-marker"></span><span class="text">서울특별시 동작구 장승배기로 171 노량진아이비빌딩 3층</span></li>
-	                <li><a href="#"><span class="icon icon-phone"></span><span class="text">02-3673-2100</span></a></li>
-	                <li><a href="{% url 'contact' %}"><span class="icon icon-envelope"></span><span class="text">dpswpf5906@naver.com</span></a></li>
+	                <li><a href="#"><span class="icon icon-phone"></span><span class="text">010-2573-8963</span></a></li>
+	                <li><a href="{% url 'contact' %}"><span class="icon icon-envelope"></span><span class="text">wjdwjd1945@gmail.com</span></a></li>
 	              </ul>
 	            </div>
             </div>
@@ -827,5 +736,94 @@
 
   </div>
 
+  <script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const navbar = document.querySelector('.navbar.navbar-expand-lg.navbar-dark.ftco_navbar.bg-dark.ftco-navbar-light');
+		const depthBg = document.querySelector('.depth_bg');
+	
+		navbar.addEventListener('mouseover', function() {
+			depthBg.style.height = '250px';
+		});
+	
+		navbar.addEventListener('mouseout', function() {
+			depthBg.style.height = '0px';
+		});
+		});
+		
+	document.querySelectorAll('.preference-button').forEach(button => {
+		button.addEventListener('click', () => {
+			
+			const selectedButtons = document.querySelectorAll('.preference-button.select');
+
+			// 만약 이미 세 개의 버튼이 선택되어 있고 새로운 버튼을 선택하려고 한다면 모든 선택을 해제합니다.
+			if (selectedButtons.length === 3 && !button.classList.contains('select')) {
+				selectedButtons.forEach(btn => btn.classList.remove('select'));
+				document.getElementById('arrow-button').style.display = 'none'; // 화살표 버튼 숨기기
+			} else {
+				// 선택된 상태라면 선택을 해제하고, 선택되지 않은 상태라면 선택합니다.
+				button.classList.toggle('select');
+			}
+
+			// 세 개의 버튼이 선택되면 GO 버튼과 화살표 버튼을 표시합니다.
+			const selectedCount = document.querySelectorAll('.preference-button.select').length;
+			if (selectedCount === 3) {
+				document.getElementById('go-button').style.display = 'block';
+				document.getElementById('arrow-button').style.display = 'block'; // 화살표 버튼 보이기										
+
+			} else {
+				document.getElementById('go-button').style.display = 'none';
+				document.getElementById('arrow-button').style.display = 'none'; // 화살표 버튼 숨기기
+				
+			}
+
+		});
+	});
+
+
+	document.getElementById('go-button').addEventListener('click', function() {
+		const selectedButtons = document.querySelectorAll('.preference-button.select');
+		const selectedTexts = [];
+
+		selectedButtons.forEach(btn => {
+			selectedTexts.push(btn.innerText);
+		});
+
+		// 숨겨진 입력 필드에 데이터를 JSON으로 설정
+		document.getElementById('selected_texts').value = selectedTexts.join(',');
+
+		// 폼 제출
+		document.getElementById('hidden-form').submit();
+	});
+
+
+	// 스크롤 이벤트를 감지하여 GO 버튼을 숨기거나 표시하는 함수
+	function handleScroll() {
+		document.querySelectorAll('.preference-button.select').forEach(btn => btn.classList.remove('select'));
+		const goButton = document.getElementById('go-button');
+		if (goButton.style.display === 'block') {
+			goButton.style.display = 'none'; // 스크롤 시 GO 버튼 숨기기				
+		}			
+	}
+
+	// 스크롤 이벤트 리스너 추가
+	window.addEventListener('scroll', handleScroll);
+
+	function pageSubmit() {
+		const username = frm1.username.value;
+		const password = frm1.pwd.value;
+	  
+		// 빈 값 체크
+		if (username === '' || password === '') {
+		  alert("아이디와 비밀번호를 모두 입력해주세요.");
+		  return; // 함수 종료
+		}
+	  
+		frm1.method = "POST";
+		frm1.action = "{% url 'login' %}";
+		frm1.submit();
+	  }
+
+
+</script>
 </body>
 </html>
