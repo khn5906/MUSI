@@ -34,6 +34,7 @@ urlpatterns = [
     path('myinfoDel/', views.myinfoDel, name='delete'),   
     path("analysis/", include('analysis.urls')),
     path("tableau_musi/", views.tableau_musi, name='tableau_musi'),
+    path("reservation/<str:prfid>/", views.reservation, name='reservation'),
     
 ]
 

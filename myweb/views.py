@@ -8,12 +8,43 @@ from django.core.mail import EmailMessage
 from django.core.mail import EmailMessage
 from django.shortcuts import render
 from django.conf import settings
-import logging
+import logging, ast
+import pandas as pd
+from datetime import datetime, timedelta
+from django.shortcuts import render
+
 
 logger = logging.getLogger(__name__)
+current_date = datetime.now().strftime('%Y%m%d')
+
+def read_and_process_file(date_str, file_path):
+        path=f'myweb/data/data_{date_str}/'
+        path+=file_path
+        df = pd.read_csv(path, encoding='utf-8-sig')
+        df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
+        return df;
+
 
 def home(request):
-    return render(request, 'home.html')
+    try:
+        file_path=f'top10_list_{current_date}.csv'
+        df= read_and_process_file(current_date, file_path)
+    
+    except Exception as e:
+        print(f'예외발생: {e}')
+        yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
+        file_path=f'final_musical_detail_{yesterday}.csv'
+        df = read_and_process_file(yesterday, file_path)
+    
+    rank_df=df[['PRFID','PRFNM','POSTER']]
+    rank_list=rank_df.values.tolist()
+    # [poster, name, prfid] 리스트에 넣기
+    
+    content={
+        'rank_list':rank_list,
+    }
+    return render(request, 'home.html', content)
+
 
 def createAccount(request):  #회원가입
     if request.method == 'GET':
@@ -183,3 +214,43 @@ def tableau_musi(request):
 def story(request):
     return render(request, 'story.html');
 
+def reservation(request, prfid):
+    current_date = datetime.now().strftime('%Y%m%d')
+    
+    try:
+        file_path=f'final_fclty_detail_{current_date}.csv'
+        df = read_and_process_file(current_date, file_path)
+        
+    except Exception as e:
+        print(f'예외발생: {e}')
+        yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
+        file_path=f'final_fclty_detail_{yesterday}.csv'
+        df = read_and_process_file(yesterday, file_path)
+    
+    ids = df['PRFID'].tolist()
+    prfid_idx = next((idx for idx, id in enumerate(ids) if prfid == id), None)
+    
+    if prfid_idx is not None:
+        rlt_list = df.iloc[prfid_idx, :].tolist()  # 해당되는 열의 모든 정보 가져오기
+        col_list = df.columns.tolist()
+        
+        content_dict = {col: rlt for col, rlt in zip(col_list, rlt_list)}
+        content_dict['PCSEGUIDANCE']=content_dict.get('PCSEGUIDANCE').replace(', ', '<br>')
+        
+        content_dict['RELATES'] = ast.literal_eval(content_dict['RELATES'])  # ast 모듈로 텍스트를 리스트로 변환
+        content_dict['INFO_URLS'] = ast.literal_eval(content_dict['INFO URLS'])
+        del content_dict['INFO URLS']
+        content_dict['INFO_URLS'] = [url for url in content_dict['INFO_URLS']]
+        
+        url_sites=content_dict['RELATES']
+        
+        content_dict['RELATES'] = { site: url for site, url in url_sites }
+    
+        content = {
+            'content_dict': content_dict,
+        }
+        print('----------------')
+        print(content_dict)
+        return render(request, 'reservation.html', content)
+    else:
+        return render(request, 'error.html', {'message': 'Requested PRFID not found'})
