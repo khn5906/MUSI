@@ -36,7 +36,7 @@ def analysis(request):
                     'url': review.url
                 })
             top_reviews.append({'title': title, 'reviews': review_list})
-        return render(request, 'reviews/analysis.html', {'top_reviews': top_reviews, 'selected_groups': selected_groups, 'keyword_scores': keyword_scores})
+        return render(request, 'analysis/analysis.html', {'top_reviews': top_reviews, 'selected_groups': selected_groups, 'keyword_scores': keyword_scores})
 
         
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
