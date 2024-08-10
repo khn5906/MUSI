@@ -290,25 +290,24 @@ def get_hall_info(dataFrame, place_names, current_date, service_key):
 
 def job():
     current_date = datetime.now().strftime('%Y%m%d')
+    print('현재 날짜:', current_date)
     all_performance_df = get_performance_info(service_key, current_date)
+    print('all_performance_df 완료')
     ing_musical_df = get_perf_details(all_performance_df, service_key, current_date)
+    print('ing_musical_df 완료')
     boxof_detail_df, rank_only_df = get_boxoffice_rank(ing_musical_df, current_date, service_key)
+    print('boxof_detail_df 완료')
     place_names=boxof_detail_df['PLACENM'].to_list()
+    print('place_names 완료')
     hall_detail_info=get_hall_info(boxof_detail_df, place_names,current_date, service_key)
-
-
-path=r'C:\Users\user\Desktop\django_project2-1\myweb\data\data_20240809\test_boxof_month_20240809.csv'
-df=pd.read_csv(path, encoding='utf-8-sig')
-place_names=df['PLACENM'].to_list()
-hall_detail_info=get_hall_info(df, place_names,current_date, service_key)
-print('완료')
+    print('전체 완료')
 
 
 job()
 
-# 매일 9시 반에 실행
-schedule.every().day.at("19:10").do(job)
+# # 매일 9시 반에 실행
+# schedule.every().day.at("17:40").do(job)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)

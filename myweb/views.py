@@ -211,9 +211,41 @@ def contact(request):
 def tableau_musi(request):
     return render(request, 'tableau_musi.html');
 
+#################################################### 민정 수정_20240810
 def story(request):
-    return render(request, 'story.html');
+    try:
+        # 전체 공연 리스트 (제목, 공연장, 날짜, 자세히보기 버튼 -> reservation 페이지로 이동)
+        df=read_and_process_file(current_date, file_path=f'myweb/data/data_{current_date}/final_fclty_detail_{current_date}.csv')
+        
+    except Exception as e:
+        print(f'예외발생: {e}')
+        yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
+        file_path=f'final_fclty_detail_{yesterday}.csv'
+        df = read_and_process_file(yesterday, file_path)
 
+    # 페이지에 필요한 컬럼만 가져오기
+    mainPage_prfs=df[['PRFID','PRFNM','PLACENM','PRFPDFROM','PRFPDTO','POSTER','RELATES']].values.tolist()
+    content_dict={}
+
+    for prf in mainPage_prfs:
+        content_dict[prf[0]] = []
+        for num in range(1, len(prf)):
+            if num == len(prf) - 1:  # 마지막 컬럼인 RELATES 컬럼일 경우
+                content_dict[prf[0]].append(ast.literal_eval(prf[num]))  # 문자열을 리스트로 변환
+            else:
+                content_dict[prf[0]].append(prf[num])
+
+    # 사이트 url 텍스트 -> 리스트로 전환
+    content_dict['RELATES'] = ast.literal_eval()  # ast 모듈로 
+    print('content_dict:', content_dict)
+
+    content={
+        'content_dict':content_dict,
+    }
+
+    return render(request, 'story.html', content);
+
+##########################################################
 def reservation(request, prfid):
     current_date = datetime.now().strftime('%Y%m%d')
     

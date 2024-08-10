@@ -10,26 +10,27 @@
 
 
 {% block content %}
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
+<div class="input_wrap">
+	<input type="text" placeholder="검색어 입력">
+	<!-- 검색어 입력하면 해당 공연만 보이도록 하기 -->
+</div>
+<div class="photo_prf_list">
+	<ul>
+		<li class>
+			<div class="thumb">
+				<img src="{{ content_dict.POSTER }}">
+			</div>
+			<div class="prf_info">
+				<div class="s_info01">
+					<p class="title">{{ content_dict.PRFNM }}</p>
+					<p class="place">{{ content_dict.PLACENM }}</p>
+					<p class="date">{{ content_dict.PRFPDFROM }} ~ {{ content_dict.PRFPDTO }}</p>
+				</div>
+				<!-- 자세히 보기 버튼 누르면 상세 예매 페이지로 이동 -->
+			</div>
+		</li>
+	</ul>
+</div>
 {% endblock %}
 
 
