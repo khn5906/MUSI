@@ -297,7 +297,7 @@ def job():
     hall_detail_info=get_hall_info(boxof_detail_df, place_names,current_date, service_key)
 
 
-path=r'C:\Users\user\Desktop\django_project2-1\myweb\data\data_20240809\test_boxof_month_20240809.csv'
+path=r'myweb\data\data_20240809\test_boxof_month_20240809.csv'
 df=pd.read_csv(path, encoding='utf-8-sig')
 place_names=df['PLACENM'].to_list()
 hall_detail_info=get_hall_info(df, place_names,current_date, service_key)
