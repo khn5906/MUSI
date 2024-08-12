@@ -49,6 +49,7 @@
         margin-bottom: 0px;
         font-size: 17px;
         font-weight: bold;
+        display: inline; /* h3와 D-Day를 한 줄에 표시 */
     }
 
     .prf_details p {
@@ -75,8 +76,15 @@
         text-align: center;
         margin-top: 50px;
         font-size: 14px;
-		font-weight: bold;
+        font-weight: bold;
         color: #808080; 
+    }
+
+    .d-day {
+        font-size: 14px;
+        font-weight: normal; /* D-Day 텍스트의 굵기 조정 */
+        margin-left: 10px; /* 공연명과 D-Day 사이에 약간의 여백 추가 */
+        display: inline; /* 한 줄로 표시 */
     }
 
 </style>
@@ -104,9 +112,16 @@
                 </div>
                 <div class="prf_info">
                     <div class="s_info01">
-                        <h3><span>{{ content.PRFNM }}</span></h3>
+                        <h3>
+                            <span>{{ content.PRFNM }}</span>
+                        </h3>
                         <div class="prf_details">
-                            <p class="date" style="margin-bottom: 0px !important; margin-left:5px;">{{ content.PRFPDFROM }} ~ {{ content.PRFPDTO }}</p>
+                            <p class="date" style="margin-bottom: 0px !important; margin-left:5px;">{{ content.PRFPDFROM }} ~ {{ content.PRFPDTO }}
+							{% if content.D_DAY != 0 %}
+                                <span class="d-day" style="margin-left: 15px; color: rgb(244, 73, 73); font-size: 12px;">(D-{{ content.D_DAY }})</span>
+							{% else %}
+								<span class="d-day" style="margin-left: 15px; color: rgb(244, 73, 73); font-size: 12px;">D-day</span>
+							{% endif %}</p>
                             <p class="place" style="margin-top: 0px !important; margin-left:4px;">{{ content.PLACENM_x }}</p>
                         </div>
                         <div>
