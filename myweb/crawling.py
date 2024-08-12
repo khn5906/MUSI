@@ -114,7 +114,7 @@ def get_perf_details(dataFrame, service_key, current_date):
                 
             total_list.append([mt20id, prfnm, prfpdfrom, prfpdto, prfcast, prfcrew, prfruntime, prfage, entrpsnm, pcseguidance, poster, relate_list, mt10id, fcltynm, styurl_text])
 
-    column_names = ['PRFID', 'PRFNM', 'PRFPDFROM', 'PRFPDTO', 'PRFCAST', 'PRFCREW', 'PRFRUNTIME', 'PRFAGE', 'ENTRPSNM', 'PCSEGUIDANCE', 'POSTER', 'RELATES', 'PLACEID', 'PLACENM' ,'INFO URLS']
+    column_names = ['PRFID', 'PRFNM', 'PRFPDFROM', 'PRFPDTO', 'PRFCAST', 'PRFCREW', 'PRFRUNTIME', 'PRFAGE', 'ENTRPSNM', 'PCSEGUIDANCE', 'POSTER', 'RELATES', 'PLACEID', 'PLACENM' ,'INFO_URLS']
     df = pd.DataFrame(total_list, columns=column_names)
     
     current_dir = os.path.dirname(__file__)
@@ -278,8 +278,7 @@ def get_hall_info(dataFrame, place_names, current_date, service_key):
     date_folder = os.path.join(data_folder, f'data_{current_date}') # 현재 파일 경로 + /data/data_20240807 날짜별 폴더 생성
     os.makedirs(date_folder, exist_ok=True)
     
-    save_path = os.path.join(date_folder, f'final_fclty_detail_{current_date}.csv') # 기존의 파일에 엎기
-    
+    save_path = os.path.join(date_folder, f'daily_final_{current_date}.csv') # 최종 파일 저장
     merged_df.to_csv(save_path, encoding='utf-8-sig', index=False)
     result_df=pd.read_csv(save_path, encoding='utf-8-sig')
     result_df=result_df.drop_duplicates()
@@ -305,9 +304,9 @@ def job():
 
 job()
 
-# # 매일 9시 반에 실행
-# schedule.every().day.at("17:40").do(job)
+# 매일 19시에 실행
+schedule.every().day.at("19:10").do(job)
 
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1)
+while True:
+    schedule.run_pending()
+    time.sleep(1)
