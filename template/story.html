@@ -53,7 +53,7 @@
     }
 
 	.input_wrap {
-		width: 556px;
+		width: 50%;
         font-size: 20px;
         border-bottom: 3px solid #3a3a3a;
         padding: 0 139px 0 0;
@@ -62,13 +62,19 @@
 		position: relative; /* position 설정 */
 	}
 
+	.input_wrap input:focus {
+		width: 100%;
+		outline: none;
+	}
+
+
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="page_top" style="margin-top: 265px;">
-	<div class="input_wrap" style="margin-bottom: 70px;">
-		<input type="text" placeholder="검색어 입력">
+<div class="page_top" style="padding-top: 265px;">
+	<form method="GET" action="{% url 'story' %}" class="input_wrap" style="margin-bottom: 70px;">
+		<input type="text" name="query" placeholder="공연명을 입력하세요" style="border-style: none; border-width: 100%; font-size: 14px;">
 	</div>
 </div>
 
@@ -89,7 +95,7 @@
                             <p class="place" style="margin-top: 0px !important; margin-left:4px;">{{ content.PLACENM }}</p>
                         </div>
 						<div>
-                        <p class="mb-0" style="margin-top: 15px;"><a href="http://localhost:8000/reservation/{{ id }}/" class="custom-btn">자세히 보기<span class="ion-ios-arrow-round-forward"></span></a></p>
+                        <p class="mb-0" style="margin-top: 15px;"><a href="{% url 'reservation' content.PRFID %}" class="custom-btn">자세히 보기<span class="ion-ios-arrow-round-forward"></span></a></p>
 						</div>
 					</div>
                 </div>

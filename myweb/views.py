@@ -228,6 +228,13 @@ def story(request):
     df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
     # 포스터 경로 https로 변경하기
 
+    # 검색어 입력한 경우 처리
+    query=request.GET.get('query', '')
+    print('query:', query)
+
+    if query:
+        df=df[df['PRFNM'].str.contains(query, case=False)]
+
     # 페이지에 필요한 컬럼만 가져오기
     mainPage_df=df=df[['PRFID','PRFNM','PLACENM', 'PRFPDFROM','PRFPDTO','POSTER']]
     mainPage_prfs=mainPage_df.values.tolist()
