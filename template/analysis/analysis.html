@@ -9,41 +9,61 @@
 
 
 {% block content %}
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<h1>Analysis Results</h1>
+<section class="ftco-section">    
+    <div class="container">
+        <h1>Analysis Results</h1>
 
-    	{% if error %}
-        <p>{{ error }}</p>
-    	{% else %}
-        <h2>Selected Groups: {{ selected_groups|join:", " }}</h2>
+        {% if error %}
+            <p>{{ error }}</p>
+        {% else %}
+            <h2>Selected Groups: {{ selected_groups|join:", " }}</h2>
 
-        <h3>Keyword Scores</h3>
-        <ul>
-            {% for keyword, score in keyword_scores.items %}
-                <li>{{ keyword }}: {{ score }}</li>
-            {% endfor %}
-        </ul>
-
-        <h3>Top Recommendations</h3>
-        <ul>
             {% for item in top_reviews %}
-                <li>
-                    <h4>{{ item.title }}</h4>
-                    <ul>
+                <div class="review-item" style="margin-bottom: 40px;">
+                    <h3>{{ item.title }}</h3>
+
+                    <div class="flex-container">
+                        <div class="keyword-scores">
+                            <h4>Keyword Scores</h4>
+                            <ul style="color: black;">
+                                {% for group, score in item.keyword_scores.items %}
+                                    <li>{{ group }}: {{ score }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="radar-chart">
+                            <!-- 방사형 그래프 삽입 -->
+                            <img src="data:image/png;base64,{{ item.radar_chart }}" alt="{{ item.title }} Radar Chart">
+                        </div>
+                    </div>
+
+                    <h4>Top Reviews</h4>
+                    <ul style="color: black;">
                         {% for review in item.reviews %}
                             <li>
                                 <strong>{{ review.title }}</strong>: {{ review.review }} (Empathy: {{ review.empathy }})
-                                
                             </li>
                         {% endfor %}
                     </ul>
-                </li>
+
+                    <!-- <h4>Detail URL</h4> -->
+                    <p>
+                        {% if item.reservation_url %}
+                            <a href="{{ item.reservation_url }}" target="_blank">More Detail</a>
+                        {% else %}
+                            <span style="color: red;">No reservation link available</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <hr>
             {% endfor %}
-		{% endif %}
-        </ul>
-	</div>
+        {% endif %}
+    </div>
 </section>
+
+
+
 <section class="ftco-section">	
 	<div class="container-fluid p-0">
 		<!-- #전체너비사용 -->

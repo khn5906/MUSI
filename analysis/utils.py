@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import pandas as pd
 import re
 from konlpy.tag import Okt
@@ -5,7 +7,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import StandardScaler
 from collections import defaultdict
 from itertools import chain, combinations
-from analysis.models import Review
 
 # 키워드 그룹
 keyword_groups = {
@@ -121,3 +122,50 @@ def calculate_tfidf(data):
     
     except Exception as e:
         print(f"An error occurred in calculate_tfidf: {e}")
+
+import matplotlib
+matplotlib.use('Agg')  # GUI 백엔드가 아닌 파일 백엔드를 사용하도록 설정
+import matplotlib.pyplot as plt
+import numpy as np
+import io
+import base64
+from scipy.interpolate import make_interp_spline
+
+def generate_radar_chart(title, labels, values, color='blue', alpha=0.25):
+
+    plt.rc('font', family='NanumGothic')  # 한글 폰트 설정
+    num_vars = len(labels)
+
+    # 각 축의 각도를 계산
+    angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
+    angles += angles[:1]  # 곡선을 닫기 위해 첫 번째 각도를 다시 추가
+
+    values += values[:1]  # 값을 폐곡선으로 만들기 위해 첫 번째 값을 다시 추가
+
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+
+    # 곡선과 채우기
+    ax.plot(angles, values, color=color, linewidth=2, linestyle='solid')
+    ax.fill(angles, values, color=color, alpha=alpha)
+
+    # y축 단위 레이블 표시
+    ax.set_yticks([20, 40, 60, 80, 100])
+    ax.set_yticklabels(['20', '40', '60', '80', '100'], fontsize=10)
+
+    # x축 라벨 표시
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels, fontsize=12, color='black')
+
+    # # 제목 위치 조정
+    # plt.title(title, size=20, color=color, y=1.1)
+    # plt.subplots_adjust(top=0.85)
+
+    # 이미지를 바이트 스트림으로 변환
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    image_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    buf.close()
+    plt.close(fig)
+
+    return image_base64

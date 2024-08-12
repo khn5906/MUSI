@@ -1,51 +1,44 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .utils import load_data, preprocess_reviews, calculate_tfidf
+from .utils import load_data, preprocess_reviews, calculate_tfidf, generate_radar_chart
 from .models import Review
-import json
+import pandas as pd
+import re
 
 def analysis(request):
-    print('aaa')
     try:
         if request.method == 'POST':
             
             selected_texts = request.POST.get('selected_texts')
             selected_groups = selected_texts.split(',')  # 문자열을 리스트로 변환
-            print("Selected groups:", selected_groups)
 
-            # 수정된 데이터 로드 함수 호출
+            # 데이터 로드 및 필요한 전처리 작업
             data = load_data()
-            data.head(1)
-            data = preprocess_reviews(data)
-            data.head(1)
-            tfidf_df = calculate_tfidf(data)
-            data.head(1)
-
-            # tfidf_df 생성 직후에 열 목록을 출력
-            print("Columns in tfidf_df:", tfidf_df.columns.tolist())
+            score_df = pd.read_csv('keyword_score.csv', index_col='title')
+            all_detail_list_df = pd.read_csv('all_detail_list.csv')  # PRFID를 포함한 데이터
 
             comb_name = '_'.join(selected_groups)
-            print(f"comb_name: {comb_name}")
-
-            # comb_name 열 기준으로 상위 3개 타이틀 추출
-            top_titles = tfidf_df.sort_values(by=comb_name, ascending=False).head(3).index.tolist()
+            top_titles = score_df.sort_values(by=comb_name, ascending=False).head(3).index.tolist()
 
             top_reviews = []
             keyword_scores = {}
+            reservation_urls = {}
 
-            # 각 title에 대해 selected_groups의 점수 계산
             for title in top_titles:
                 scores = {}
                 for group in selected_groups:
-                    if group in tfidf_df.columns:
-                        print(f"Accessing tfidf_df[{title}][{group}]")
-                        scores[group] = tfidf_df.loc[title, group]
-                    else:
-                        print(f"Group '{group}' not found in tfidf_df columns")
-                        scores[group] = 0  # 기본값 설정
+                    scores[group] = score_df.loc[title, group] if group in score_df.columns else 0
                 keyword_scores[title] = scores
 
-                # CSV 파일에서 상위 타이틀과 연결된 리뷰 추출
+                # all_detail_list_df에서 PRFID 추출
+                matching_row = all_detail_list_df[all_detail_list_df['PRFNM'].str.contains(title, na=False, regex=False)]
+                print('matching_row : ', matching_row)
+                if not matching_row.empty:
+                    prfid = matching_row.iloc[0]['PRFID']
+                    reservation_urls[title] = f"/reservation/{prfid}"
+                else:
+                    reservation_urls[title] = None
+
                 title_reviews = data[data['title2'] == title].sort_values(by='empathy', ascending=False).head(3)
                 review_list = []
                 for _, review in title_reviews.iterrows():
@@ -56,11 +49,19 @@ def analysis(request):
                         'url': review['url']
                     })
                 top_reviews.append({'title': title, 'reviews': review_list})
+            print('reservation_urls : ', reservation_urls)
+            # 여기에서 top_reviews에 keyword_scores와 reservation_urls 병합
+            for item in top_reviews:
+                title = item['title']
+                labels = list(keyword_scores[title].keys())  # 키워드 그룹 이름들
+                values = list(keyword_scores[title].values())  # 해당 타이틀의 점수들
+                item['keyword_scores'] = keyword_scores.get(title, {})
+                item['reservation_url'] = reservation_urls.get(title)
+                item['radar_chart'] = generate_radar_chart(title, labels, values)
 
             return render(request, 'analysis/analysis.html', {
                 'top_reviews': top_reviews,
                 'selected_groups': selected_groups,
-                'keyword_scores': keyword_scores
             })
 
     except Exception as e:
