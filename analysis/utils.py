@@ -129,7 +129,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 import base64
-from scipy.interpolate import make_interp_spline
 
 def generate_radar_chart(title, labels, values, color='blue', alpha=0.25):
 
@@ -155,6 +154,13 @@ def generate_radar_chart(title, labels, values, color='blue', alpha=0.25):
     # x축 라벨 표시
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(labels, fontsize=12, color='black')
+
+    # labels와 values를 매칭하여 요약 텍스트 추가
+    summary_text = "\n".join([f"{label}: {value}" for label, value in zip(labels, values[:-1])])
+
+    # 요약 텍스트를 원 바깥에 배치
+    fig.text(0.75, 0.95, summary_text, ha='left', fontsize=10,
+             bbox=dict(facecolor='white', alpha=0.5), va='top')
 
     # # 제목 위치 조정
     # plt.title(title, size=20, color=color, y=1.1)

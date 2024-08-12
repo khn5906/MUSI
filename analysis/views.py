@@ -31,7 +31,7 @@ def analysis(request):
                 keyword_scores[title] = scores
 
                 # all_detail_list_df에서 PRFID 추출
-                matching_row = all_detail_list_df[all_detail_list_df['PRFNM'].str.contains(title, na=False, regex=False)]
+                matching_row = all_detail_list_df[all_detail_list_df['PRFNM'] == title]
                 print('matching_row : ', matching_row)
                 if not matching_row.empty:
                     prfid = matching_row.iloc[0]['PRFID']
