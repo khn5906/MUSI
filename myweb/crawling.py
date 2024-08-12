@@ -114,7 +114,7 @@ def get_perf_details(dataFrame, service_key, current_date):
                 
             total_list.append([mt20id, prfnm, prfpdfrom, prfpdto, prfcast, prfcrew, prfruntime, prfage, entrpsnm, pcseguidance, poster, relate_list, mt10id, fcltynm, styurl_text])
 
-    column_names = ['PRFID', 'PRFNM', 'PRFPDFROM', 'PRFPDTO', 'PRFCAST', 'PRFCREW', 'PRFRUNTIME', 'PRFAGE', 'ENTRPSNM', 'PCSEGUIDANCE', 'POSTER', 'RELATES', 'PLACEID', 'PLACENM' ,'INFO URLS']
+    column_names = ['PRFID', 'PRFNM', 'PRFPDFROM', 'PRFPDTO', 'PRFCAST', 'PRFCREW', 'PRFRUNTIME', 'PRFAGE', 'ENTRPSNM', 'PCSEGUIDANCE', 'POSTER', 'RELATES', 'PLACEID', 'PLACENM' ,'INFO_URLS']
     df = pd.DataFrame(total_list, columns=column_names)
     
     current_dir = os.path.dirname(__file__)
@@ -278,8 +278,7 @@ def get_hall_info(dataFrame, place_names, current_date, service_key):
     date_folder = os.path.join(data_folder, f'data_{current_date}') # 현재 파일 경로 + /data/data_20240807 날짜별 폴더 생성
     os.makedirs(date_folder, exist_ok=True)
     
-    save_path = os.path.join(date_folder, f'final_fclty_detail_{current_date}.csv') # 기존의 파일에 엎기
-    
+    save_path = os.path.join(date_folder, f'daily_final_{current_date}.csv') # 최종 파일 저장
     merged_df.to_csv(save_path, encoding='utf-8-sig', index=False)
     result_df=pd.read_csv(save_path, encoding='utf-8-sig')
     result_df=result_df.drop_duplicates()
@@ -290,23 +289,22 @@ def get_hall_info(dataFrame, place_names, current_date, service_key):
 
 def job():
     current_date = datetime.now().strftime('%Y%m%d')
+    print('현재 날짜:', current_date)
     all_performance_df = get_performance_info(service_key, current_date)
+    print('all_performance_df 완료')
     ing_musical_df = get_perf_details(all_performance_df, service_key, current_date)
+    print('ing_musical_df 완료')
     boxof_detail_df, rank_only_df = get_boxoffice_rank(ing_musical_df, current_date, service_key)
+    print('boxof_detail_df 완료')
     place_names=boxof_detail_df['PLACENM'].to_list()
+    print('place_names 완료')
     hall_detail_info=get_hall_info(boxof_detail_df, place_names,current_date, service_key)
-
-
-path=r'myweb\data\data_20240809\test_boxof_month_20240809.csv'
-df=pd.read_csv(path, encoding='utf-8-sig')
-place_names=df['PLACENM'].to_list()
-hall_detail_info=get_hall_info(df, place_names,current_date, service_key)
-print('완료')
+    print('전체 완료')
 
 
 job()
 
-# 매일 9시 반에 실행
+# 매일 19시에 실행
 schedule.every().day.at("19:10").do(job)
 
 while True:
