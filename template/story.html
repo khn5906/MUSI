@@ -33,10 +33,10 @@
         display: block;
         margin-left: auto;
         margin-right: auto;
-		transition: all 0.6s;
+        transition: all 0.6s;
     }
 
-	.thumb:hover img {
+    .thumb:hover img {
         transform: scale(1.1) translateY(-10px); /* 커서가 댔을 때 이미지 확대 */
     }
 
@@ -51,38 +51,47 @@
         font-weight: bold;
     }
 
-
     .prf_details p {
         font-size: 14px;
         margin: 5px 0;
     }
 
-	.input_wrap {
-		width: 50%;
+    .input_wrap {
+        width: 50%;
         font-size: 20px;
         border-bottom: 3px solid #3a3a3a;
         padding: 0 139px 0 0;
-		box-sizing: border-box;
+        box-sizing: border-box;
         margin: 0 auto 30px auto; /* 중앙 정렬 및 공연 리스트와의 간격 조정 */
-		position: relative; /* position 설정 */
-	}
+        position: relative; /* position 설정 */
+    }
 
-	.input_wrap input:focus {
-		width: 100%;
-		outline: none;
-	}
+    .input_wrap input:focus {
+        width: 100%;
+        outline: none;
+    }
 
+    .no-results {
+        text-align: center;
+        margin-top: 50px;
+        font-size: 14px;
+		font-weight: bold;
+        color: #808080; 
+    }
 
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="page_top" style="padding-top: 265px;">
-	<form method="GET" action="{% url 'story' %}" class="input_wrap" style="margin-bottom: 70px; padding-top:47px;">
-		<input type="text" name="query" placeholder="공연명을 입력하세요" style="border-style: none; border-width: 100%; font-size: 14px;">
-	</div>
+    <form method="GET" action="{% url 'story' %}" class="input_wrap" style="margin-bottom: 70px; padding-top:47px;">
+        <input type="text" name="query" placeholder="공연명을 입력하세요" style="border-style: none; border-width: 100%; font-size: 14px;">
+    </form>
 </div>
 
+{% if no_results %}
+    <div class="no-results" style="margin-top: 165px; margin-bottom: 300px;">검색된 내용의 공연이 없습니다</div>
+{% else %}
 <!-- / -->
 <div class="photo_prf_list" style="color: black;">
     <ul style="margin-top:0px !important;">
@@ -90,7 +99,7 @@
         <li class="prf_detail">
             <div class="prf_item">
                 <div class="thumb">
-					<a href="{% url 'reservation' content.PRFID %}">
+                    <a href="{% url 'reservation' content.PRFID %}">
                     <img src="{{ content.POSTER }}"></a>
                 </div>
                 <div class="prf_info">
@@ -98,16 +107,17 @@
                         <h3><span>{{ content.PRFNM }}</span></h3>
                         <div class="prf_details">
                             <p class="date" style="margin-bottom: 0px !important; margin-left:5px;">{{ content.PRFPDFROM }} ~ {{ content.PRFPDTO }}</p>
-                            <p class="place" style="margin-top: 0px !important; margin-left:4px;">{{ content.PLACENM }}</p>
+                            <p class="place" style="margin-top: 0px !important; margin-left:4px;">{{ content.PLACENM_x }}</p>
                         </div>
-						<div>
+                        <div>
                         <p class="mb-0" style="margin-top: 15px;"><a href="{% url 'reservation' content.PRFID %}" class="custom-btn">자세히 보기<span class="ion-ios-arrow-round-forward"></span></a></p>
-						</div>
-					</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </li>
     {% endfor %}
     </ul>
 </div>
+{% endif %}
 {% endblock %}

@@ -1,1 +1,0 @@
-python C:\\Users\\user\\Desktop\\django_project2-1\\myweb\\crawling.py
