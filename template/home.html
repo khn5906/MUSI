@@ -113,6 +113,7 @@
 
 			.square-button:hover {
 				color: #fff; /* 호버 시 글자 색 변경 */
+				opacity: 0.8;
 			}	
 
 			.square-button.select {
@@ -266,8 +267,13 @@
 						</div>
 					</li>
 					<li class="nav-item dropdown mx-3">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" data-nav-section="team" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<a class="nav-link dropdown-toggle" href="{% url 'contact' %}" id="navbarDropdown3" data-nav-section="team" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							Team
+						</a>
+					</li>
+					<li class="nav-item dropdown mx-3">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" data-nav-section="contact" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Contact
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown3">
 							<a class="dropdown-item" onclick="document.location.href='{% url 'contact' %}'">Contact</a>							
@@ -288,7 +294,7 @@
 					
 					<li class="nav-item dropdown mx-3">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown5" data-nav-section="sign" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Sign in
+							Sign In
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown5">
 							<a class="dropdown-item" onclick="document.location.href='{% url 'register' %}'">Sign Up</a>
@@ -312,7 +318,7 @@
 				<!-- class="row no-gutters slider-text js-fullheight align-items-center" -->
 				<div class="col-md-8 ftco-animate" data-scrollax="properties: { translateY: '70%' }" style="margin-top:270px;">
 				<h1 class="mb-4 text_over" style="color:black; margin-left:25%;" data-scrollax="properties: { translateY: '30%',  }">What is your preference?</h1>
-				<p class="mb-4" style="color:#4e555b; margin-left:25%;">Let's go to the world of musicals with musi</p>		
+				<p class="mb-4" style="color:#4e555b; margin-left:25%;" data-scrollax="properties: { translateY: '30%',  }">Let's go to the world of musicals with musi</p>		
 				</div>					
 			</div>
 			<video autoplay muted loop class="logo-video">
@@ -400,7 +406,7 @@
     </section>
 
 	<section class="ftco-section" data-section="team">
-		<div class="container-fluid p-0">
+		<div class="container">
 			<div class="row no-gutters justify-content-center pb-5">
 				<div class="col-md-12 heading-section text-center ftco-animate">
 					<span class="subheading">developer</span>
@@ -501,10 +507,58 @@
 			</div>
 		</div>
 	</section>
+    <section class="ftco-section contact-section" data-section="contact">
+		<div class="container">
+		  <div class="col-md-12 heading-section text-center ftco-animate">
+			  <span class="subheading">contact</span>
+			  <h2 class="mb-4">Do you have any questions?</h2>
+			  <p style="color:#4e555b" class="font-korean">Please send your inquiries via email. We will do our best to respond as soon as possible.</p>
+			  <a href="{% url 'contact' %}" class="square-button">MORE <span class="ion-ios-arrow-round-forward"></span></a>
+		  </div>
+		  <div class="row d-flex contact-info" style="padding-top: 80px;">
+			<div class="col-md-6 col-lg-3 d-flex">
+				<div class="align-self-stretch box p-4 text-center">
+					<div class="icon d-flex align-items-center justify-content-center">
+						<span class="icon-map-signs"></span>
+					</div>
+					<h3 class="mb-4">Address</h3>
+				  <p style="color:#4e555b">서울특별시 동작구 장승배기로 171 노량진아이비빌딩 3층</p>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-3 d-flex">
+				<div class="align-self-stretch box p-4 text-center">
+					<div class="icon d-flex align-items-center justify-content-center">
+						<span class="icon-phone2"></span>
+					</div>
+					<h3 class="mb-4">Contact Number</h3>
+				  <p style="color:#4e555b"><a href="tel://1234567920">02-3673-2100</a></p>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-3 d-flex">
+				<div class="align-self-stretch box p-4 text-center">
+					<div class="icon d-flex align-items-center justify-content-center">
+						<span class="icon-paper-plane"></span>
+					</div>
+					<h3 class="mb-4">Email Address</h3>
+				  <p style="color:#4e555b"><a href="mailto:info@yoursite.com">wjdwjd1945@gmail.com</a></p>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-3 d-flex">
+				<div class="align-self-stretch box p-4 text-center">
+					<div class="icon d-flex align-items-center justify-content-center">
+						<span class="icon-globe"></span>
+					</div>
+					<h3 class="mb-4">Website</h3>
+				  <p><a href="{% url 'home' %}" style="color:#4e555b">http://localhost:8000/home/</a></p>
+				</div>
+			</div>
+		  </div>
+  
+	  </div>		
+	</section>
 	
 	{% if user.is_active %}	
 	{% else %}
-
     <section class="ftco-section contact-section ftco-no-pb" data-section="sign" style="height:100vh;">
       <div class="container">
 		<div class="auth-wrapper d-flex justify-content-center">
@@ -537,48 +591,6 @@
     </section>
 	{% endif %}
 
-    <section class="ftco-section contact-section">
-      <div class="container">
-        <div class="row d-flex contact-info">
-          <div class="col-md-6 col-lg-3 d-flex">
-          	<div class="align-self-stretch box p-4 text-center">
-          		<div class="icon d-flex align-items-center justify-content-center">
-          			<span class="icon-map-signs"></span>
-          		</div>
-          		<h3 class="mb-4">Address</h3>
-	            <p style="color:#4e555b">서울특별시 동작구 장승배기로 171 노량진아이비빌딩 3층</p>
-	          </div>
-          </div>
-          <div class="col-md-6 col-lg-3 d-flex">
-          	<div class="align-self-stretch box p-4 text-center">
-          		<div class="icon d-flex align-items-center justify-content-center">
-          			<span class="icon-phone2"></span>
-          		</div>
-          		<h3 class="mb-4">Contact Number</h3>
-	            <p style="color:#4e555b"><a href="tel://1234567920">02-3673-2100</a></p>
-	          </div>
-          </div>
-          <div class="col-md-6 col-lg-3 d-flex">
-          	<div class="align-self-stretch box p-4 text-center">
-          		<div class="icon d-flex align-items-center justify-content-center">
-          			<span class="icon-paper-plane"></span>
-          		</div>
-          		<h3 class="mb-4">Email Address</h3>
-	            <p style="color:#4e555b"><a href="mailto:info@yoursite.com">wjdwjd1945@gmail.com</a></p>
-	          </div>
-          </div>
-          <div class="col-md-6 col-lg-3 d-flex">
-          	<div class="align-self-stretch box p-4 text-center">
-          		<div class="icon d-flex align-items-center justify-content-center">
-          			<span class="icon-globe"></span>
-          		</div>
-          		<h3 class="mb-4">Website</h3>
-	            <p><a href="{% url 'home' %}" style="color:#4e555b">http://localhost:8000/home/</a></p>
-	          </div>
-          </div>
-        </div>
-      </div>
-    </section>
 	{% endblock %}
 	
 	
