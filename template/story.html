@@ -5,31 +5,103 @@
 {% block title %}story{% endblock %}
 
 {% block style %}
+<style>
+    .photo_prf_list ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        padding: 0;
+        margin: 100px;
+        list-style-type: none;
+    }
 
+    .photo_prf_list li {
+        margin: 10px;
+        box-sizing: border-box;
+    }
+
+    .prf_item {
+        width: 320px;
+        height: 570px;
+        overflow: hidden;
+    }
+
+    .thumb img {
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .prf_info {
+        padding: 10px;
+    }
+
+    .s_info01 h3 {
+        margin-top: 7px;
+        margin-bottom: 0px;
+        font-size: 17px;
+        font-weight: bold;
+    }
+
+
+    .prf_details p {
+        font-size: 14px;
+        margin: 5px 0;
+    }
+
+	.input_wrap {
+		width: 50%;
+        font-size: 20px;
+        border-bottom: 3px solid #3a3a3a;
+        padding: 0 139px 0 0;
+		box-sizing: border-box;
+        margin: 0 auto 30px auto; /* 중앙 정렬 및 공연 리스트와의 간격 조정 */
+		position: relative; /* position 설정 */
+	}
+
+	.input_wrap input:focus {
+		width: 100%;
+		outline: none;
+	}
+
+
+</style>
 {% endblock %}
-
 
 {% block content %}
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
+<div class="page_top" style="padding-top: 265px;">
+	<form method="GET" action="{% url 'story' %}" class="input_wrap" style="margin-bottom: 70px; padding-top:47px;">
+		<input type="text" name="query" placeholder="공연명을 입력하세요" style="border-style: none; border-width: 100%; font-size: 14px;">
 	</div>
-</section>
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
+</div>
+
+<!-- / -->
+<div class="photo_prf_list" style="color: black;">
+    <ul style="margin-top:0px !important;">
+    {% for content in contents_list %}
+        <li class="prf_detail">
+            <div class="prf_item">
+                <div class="thumb">
+                    <img src="{{ content.POSTER }}">
+                </div>
+                <div class="prf_info">
+                    <div class="s_info01">
+                        <h3><span>{{ content.PRFNM }}</span></h3>
+                        <div class="prf_details">
+                            <p class="date" style="margin-bottom: 0px !important; margin-left:5px;">{{ content.PRFPDFROM }} ~ {{ content.PRFPDTO }}</p>
+                            <p class="place" style="margin-top: 0px !important; margin-left:4px;">{{ content.PLACENM }}</p>
+                        </div>
+						<div>
+                        <p class="mb-0" style="margin-top: 15px;"><a href="{% url 'reservation' content.PRFID %}" class="custom-btn">자세히 보기<span class="ion-ios-arrow-round-forward"></span></a></p>
+						</div>
+					</div>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
 {% endblock %}
-
-

@@ -347,13 +347,12 @@
 					<div class="project">
 						<div class="img">
 							<!-- <a href="http://localhost:8000/reservation/{{ id }}/" class="icon image-popup d-flex justify-content-center align-items-center"> -->
-							<img src="{{ poster }}" class="img-fluid" alt="Colorlib Template">
-							</a>
+							<img src="{{ poster }}" class="img-fluid" alt="Colorlib Template" style="width: 350px !important; height: 350px !important;">
 							<!-- <span class="icon-expand"></span> -->
 						</div>
 						<div class="text px-4">
-							<h3><a href="http://localhost:8000/reservation/{{ id }}/">{{ name }}</a></h3>
-							<p class="mb-0"><a href="http://localhost:8000/reservation/{{ id }}/" class="custom-btn">예매하기<span class="ion-ios-arrow-round-forward"></span></a></p>
+							<h3 style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><a href="{% url 'reservation' id %}" style="white-space: nowrap;">{{ name }}</a></h3>
+							<p class="mb-0" style="margin-top: 15px;"><a href="{% url 'reservation' id %}" class="custom-btn">예매하기<span class="ion-ios-arrow-round-forward"></span></a></p>
 						</div>
 					</div>
 				</div>
