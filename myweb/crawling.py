@@ -84,11 +84,13 @@ def get_perf_details(dataFrame, service_key, current_date):
             
             if not item:
                 continue
-        
+            
+            prfpdto = item.find('prfpdto').text if item.find('prfpdto') is not None else 'N/A'
+            
+            # if     
             mt20id = item.find('mt20id').text if item.find('mt20id') is not None else 'N/A'    # 타이틀
             prfnm = item.find('prfnm').text if item.find('prfnm') is not None else 'N/A'
             prfpdfrom = item.find('prfpdfrom').text if item.find('prfpdfrom') is not None else 'N/A'
-            prfpdto = item.find('prfpdto').text if item.find('prfpdto') is not None else 'N/A'
             prfcast = item.find('prfcast').text if item.find('prfcast') is not None else 'N/A'
             prfcrew = item.find('prfcrew').text if item.find('prfcrew') is not None else 'N/A'
             prfruntime = item.find('prfruntime').text if item.find('prfruntime') is not None else 'N/A'
