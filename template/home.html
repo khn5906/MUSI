@@ -240,6 +240,10 @@
 				right: 20px; /* 화면 오른쪽에서 20px 왼쪽으로 위치 */
 				z-index: 1000; /* 다른 요소들 위에 나타나도록 설정 */
 				width: 3.5%;
+				right: 0px; outline:none; 
+				transition: opacity 0.5s ease, visibility 0.5s ease; 
+				opacity: 0; 
+				visibility: hidden;
 			}
 
 		</style>
@@ -597,7 +601,7 @@
         </div>
       </div>
     </section>
-	<button type="button" id="btn_topGo" style="right: 0px; outline:none; transition: opacity 0.5s ease, visibility 0.5s ease; opacity: 0; visibility: hidden;" onclick="window.scrollTo(0,0);">
+	<button type="button" id="btn_topGo" onclick="window.scrollTo(0,0);">
 		<span style="color: white; display: inline-block; text-align: center; line-height: 1.2;">
 			<div style="font-size: 20px; letter-spacing: -1px;">▲</div>
 			<div style="font-size: 16px; letter-spacing: -1px;">TOP</div>
