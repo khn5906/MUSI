@@ -7,5 +7,7 @@ from django.conf import settings
 from . import views
 
 urlpatterns = [
-    path('analysis/', views.analysis, name='analysis'),   
+    path('analysis/', views.analysis, name='analysis'),  
+    path('analysis_review/', views.analysis_review, name='review'),  
+     
 ]
