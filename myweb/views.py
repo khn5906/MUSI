@@ -34,7 +34,7 @@ def home(request):
     except Exception as e:
         print(f'예외발생: {e}')
         yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
-        file_path=f'final_musical_detail_{yesterday}.csv'
+        file_path=f'top10_list_{yesterday}.csv'
         df = read_and_process_file(yesterday, file_path)
     
     rank_df=df[['PRFID','PRFNM','POSTER','D_DAY']]
@@ -219,12 +219,12 @@ def story(request):
 
     try:
         # 전체 공연 리스트 (제목, 공연장, 날짜, 자세히보기 버튼 -> reservation 페이지로 이동)
-        file_path=f'myweb/data/data_20240812/daily_final_{current_date}.csv'
+        file_path=f'myweb/data/data_{current_date}/daily_final_{current_date}.csv'
 
     except Exception as e:
         print(f'예외발생: {e}')
         yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
-        file_path = f'myweb/data/data_20240812/daily_final_{yesterday}.csv'
+        file_path = f'myweb/data/data_{yesterday}/daily_final_{yesterday}.csv'
 
     df = pd.read_csv(file_path, encoding='utf-8-sig')
     df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
