@@ -230,6 +230,23 @@
 				opacity: 0.1;			
         	}
 
+			#btn_topGo {
+				background-color: rgb(219, 21, 21); /* 배경색을 빨간색으로 설정 */
+				text-align: center; /* 텍스트를 가운데 정렬 */
+				border: none; /* 테두리 제거 */
+				cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */
+				padding: 10px; /* 버튼 내부 여백 설정 */
+				position: fixed; /* 화면 고정 */
+				bottom: 50px; /* 화면 하단에서 20px 위로 위치 */
+				right: 20px; /* 화면 오른쪽에서 20px 왼쪽으로 위치 */
+				z-index: 1000; /* 다른 요소들 위에 나타나도록 설정 */
+				width: 3.5%;
+				right: 0px; outline:none; 
+				transition: opacity 0.5s ease, visibility 0.5s ease; 
+				opacity: 0; 
+				visibility: hidden;
+			}
+
 		</style>
 		{% block style %}{% endblock %}
 	</head>
@@ -348,7 +365,7 @@
 			  </div>
 			  <div class="carousel-project owl-carousel" style="width: 100%; height:100%;">
 				<!-- 이미지나 예매하기 버튼 클릭하면 해당 reservation 페이지로 이동 -->
-				{% for id, name, poster in rank_list %}
+				{% for id, name, poster, d_day in rank_list %}
 				<div class="item">
 					<div class="project">
 						<div class="img">
@@ -356,8 +373,13 @@
 							<img src="{{ poster }}" class="img-fluid" alt="Colorlib Template" style="width: 350px !important; height: 350px !important;">
 							<!-- <span class="icon-expand"></span> -->
 						</div>
+						{% if content.D_DAY != 0 %}
+							<span class="d-day" style="margin-top:-10px; margin-left: 5px; color: rgb(244, 73, 73); font-size: 12px; letter-spacing: 0px;">(D-{{ d_day }})</span>
+						{% else %}
+							<span class="d-day" style="margin-left: 5px; color: rgb(244, 73, 73); font-size: 12px; letter-spacing: 0px;">D-day</span>
+						{% endif %}
 						<div class="text px-4">
-							<h3 style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><a href="{% url 'reservation' id %}" style="white-space: nowrap;">{{ name }}</a></h3>
+							<h3 style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -10px;"><a href="{% url 'reservation' id %}" style="white-space: nowrap;">{{ name }}</a></h3>
 							<p class="mb-0" style="margin-top: 15px;"><a href="{% url 'reservation' id %}" class="custom-btn">예매하기<span class="ion-ios-arrow-round-forward"></span></a></p>
 						</div>
 					</div>
@@ -591,8 +613,59 @@
     </section>
 	{% endif %}
 
+<<<<<<< HEAD
+=======
+    <section class="ftco-section contact-section">
+      <div class="container">
+        <div class="row d-flex contact-info">
+          <div class="col-md-6 col-lg-3 d-flex">
+          	<div class="align-self-stretch box p-4 text-center">
+          		<div class="icon d-flex align-items-center justify-content-center">
+          			<span class="icon-map-signs"></span>
+          		</div>
+          		<h3 class="mb-4">Address</h3>
+	            <p style="color:#4e555b">서울특별시 동작구 장승배기로 171 노량진아이비빌딩 3층</p>
+	          </div>
+          </div>
+          <div class="col-md-6 col-lg-3 d-flex">
+          	<div class="align-self-stretch box p-4 text-center">
+          		<div class="icon d-flex align-items-center justify-content-center">
+          			<span class="icon-phone2"></span>
+          		</div>
+          		<h3 class="mb-4">Contact Number</h3>
+	            <p style="color:#4e555b"><a href="tel://1234567920">02-3673-2100</a></p>
+	          </div>
+          </div>
+          <div class="col-md-6 col-lg-3 d-flex">
+          	<div class="align-self-stretch box p-4 text-center">
+          		<div class="icon d-flex align-items-center justify-content-center">
+          			<span class="icon-paper-plane"></span>
+          		</div>
+          		<h3 class="mb-4">Email Address</h3>
+	            <p style="color:#4e555b"><a href="mailto:info@yoursite.com">wjdwjd1945@gmail.com</a></p>
+	          </div>
+          </div>
+          <div class="col-md-6 col-lg-3 d-flex">
+          	<div class="align-self-stretch box p-4 text-center">
+          		<div class="icon d-flex align-items-center justify-content-center">
+          			<span class="icon-globe"></span>
+          		</div>
+          		<h3 class="mb-4">Website</h3>
+	            <p><a href="{% url 'home' %}" style="color:#4e555b">http://localhost:8000/home/</a></p>
+	          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+	<button type="button" id="btn_topGo" onclick="window.scrollTo(0,0);">
+		<span style="color: white; display: inline-block; text-align: center; line-height: 1.2;">
+			<div style="font-size: 20px; letter-spacing: -1px;">▲</div>
+			<div style="font-size: 16px; letter-spacing: -1px;">TOP</div>
+		</span>
+	</button>
+>>>>>>> jeong_2.0.0
 	{% endblock %}
-	
+
 	
 
     <footer class="ftco-footer ftco-section">
@@ -680,6 +753,18 @@
   </div>
 
   <script>
+		window.onscroll = function() {
+			var topButton = document.getElementById("btn_topGo");
+	
+			if (document.body.scrollTop > 1000 || document.documentElement.scrollTop > 1000) {
+				topButton.style.opacity = "1";
+				topButton.style.visibility = "visible";
+			} else {
+				topButton.style.opacity = "0";
+				topButton.style.visibility = "hidden";
+			}
+		};
+
 	document.addEventListener('DOMContentLoaded', function() {
 		const navbar = document.querySelector('.navbar.navbar-expand-lg.navbar-dark.ftco_navbar.bg-dark.ftco-navbar-light');
 		const depthBg = document.querySelector('.depth_bg');
