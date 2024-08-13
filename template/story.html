@@ -24,11 +24,12 @@
         width: 320px;
         height: 570px;
         overflow: hidden;
+        margin-bottom: 40px;
     }
 
     .thumb img {
         width: 300px;
-        height: 300px;
+        height: 400px;
         object-fit: cover;
         display: block;
         margin-left: auto;
@@ -64,6 +65,7 @@
         padding: 0 139px 0 0;
         box-sizing: border-box;
         margin: 0 auto 30px auto; /* 중앙 정렬 및 공연 리스트와의 간격 조정 */
+        margin-bottom: 120px !important;
         position: relative; /* position 설정 */
     }
 
@@ -87,13 +89,27 @@
         display: inline; /* 한 줄로 표시 */
     }
 
+    #btn_topGo {
+        background-color: rgb(219, 21, 21); /* 배경색을 빨간색으로 설정 */
+        text-align: center; /* 텍스트를 가운데 정렬 */
+        border: none; /* 테두리 제거 */
+        cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */
+        padding: 10px; /* 버튼 내부 여백 설정 */
+        position: fixed; /* 화면 고정 */
+        bottom: 50px; /* 화면 하단에서 20px 위로 위치 */
+        right: 20px; /* 화면 오른쪽에서 20px 왼쪽으로 위치 */
+        z-index: 1000; /* 다른 요소들 위에 나타나도록 설정 */
+        width: 72px;
+    }
+    
+
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="page_top" style="padding-top: 265px;">
     <form method="GET" action="{% url 'story' %}" class="input_wrap" style="margin-bottom: 70px; padding-top:47px;">
-        <input type="text" name="query" placeholder="공연명을 입력하세요" style="border-style: none; border-width: 100%; font-size: 14px;">
+        <input type="text" name="query" placeholder="공연명을 입력하세요" style="border-style: none; border-width: 100%; font-size: 14px; width:120%;">
     </form>
 </div>
 
@@ -101,7 +117,7 @@
     <div class="no-results" style="margin-top: 165px; margin-bottom: 300px;">검색된 내용의 공연이 없습니다</div>
 {% else %}
 <!-- / -->
-<div class="photo_prf_list" style="color: black;">
+<div class="photo_prf_list" style="color: black; margin-left:160px; max-width:80%">
     <ul style="margin-top:0px !important;">
     {% for content in contents_list %}
         <li class="prf_detail">
@@ -134,5 +150,27 @@
     {% endfor %}
     </ul>
 </div>
+<button type="button" id="btn_topGo" style="right: 0px; outline:none; transition: opacity 0.5s ease, visibility 0.5s ease; opacity: 0; visibility: hidden;" onclick="window.scrollTo(0,0);">
+    <span style="color: white; display: inline-block; text-align: center; line-height: 1.2;">
+        <div style="font-size: 20px; letter-spacing: -1px;">▲</div>
+        <div style="font-size: 16px; letter-spacing: -1px;">TOP</div>
+    </span>
+</button>
+
+<script>
+    window.onscroll = function() {
+        var topButton = document.getElementById("btn_topGo");
+
+        if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+            topButton.style.opacity = "1";
+            topButton.style.visibility = "visible";
+        } else {
+            topButton.style.opacity = "0";
+            topButton.style.visibility = "hidden";
+        }
+    };
+</script>
+
+
 {% endif %}
 {% endblock %}

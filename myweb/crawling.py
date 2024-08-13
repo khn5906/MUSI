@@ -206,8 +206,14 @@ def get_boxoffice_rank(dataFrame, current_date, service_key):  # 공연중인 �
     total_df = pd.merge(dataFrame, average_rank_7days, on='PRFID', how='left')
     # total_df=total_df.sort_values('AVG RANK')  # 순위순으로 오름차순 정렬
     final_merge_df = pd.merge(total_df, average_rank_30days, on='PRFID', how='left')
+    
+    # 일주일 순위 평균으로 정렬 후 순위 부여
+    final_merge_df=final_merge_df.sort_values('7DAYS RANK')
+    final_merge_df.loc[final_merge_df['7DAYS RANK'].notna(), '7DAYS RANK']=range(1, len(final_merge_df[final_merge_df['7DAYS RANK'].notna()])+1)
+    
+    # 한달 순위 평균 정렬 후 순위 부여
     final_merge_df=final_merge_df.sort_values('30DAYS RANK')
-
+    final_merge_df.loc[final_merge_df['30DAYS RANK'].notna(), '30DAYS RANK']=range(1, len(final_merge_df[final_merge_df['30DAYS RANK'].notna()])+1)
     
     current_dir = os.path.dirname(__file__)
     data_folder = os.path.join(current_dir, 'data')  # 현재 파일 경로 + /data
@@ -216,10 +222,10 @@ def get_boxoffice_rank(dataFrame, current_date, service_key):  # 공연중인 �
     date_folder = os.path.join(data_folder, f'data_{current_date}') # 현재 파일 경로 + /data/data_20240807 날짜별 폴더 생성
     os.makedirs(date_folder, exist_ok=True)
     
-    save_path = os.path.join(date_folder, f'test_boxof_month_{current_date}.csv')
-    
+    save_path = os.path.join(date_folder, f'daily_final_{current_date}.csv')
     final_merge_df.to_csv(save_path, index=False, encoding='utf-8-sig')
     
+    ################# home 페이지의 순위 롤링 배너에서 사용
     top10_save_path = os.path.join(date_folder, f'top10_list_{current_date}.csv')
     top_10_df = final_merge_df[final_merge_df['30DAYS RANK'].notna()].head(10)
     top_10_df['AVG RANK_DESC']=(top_10_df.iloc[-1,-1]+top_10_df.iloc[0, -1])-top_10_df['30DAYS RANK']
@@ -321,7 +327,7 @@ def job():
     print('전체 완료')
 
 
-# job()
+job()
 
 
 
