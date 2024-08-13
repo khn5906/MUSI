@@ -60,6 +60,15 @@
         width: 3.5%;
     }
 
+    .collaspeText::after {
+        content: url("{% static 'images/위로 화살표.png' %}");
+        display: inline-block;
+        margin-left: 8px; /* 텍스트와 이미지 사이의 간격 */
+        width: 16px; /* 화살표 이미지의 너비 */
+        height: 16px; /* 화살표 이미지의 높이 */
+        vertical-align: middle;
+    }
+    
 
 </style>
 {% endblock %}
@@ -139,9 +148,18 @@
         </div>
         <div class="productBottom" style="margin-top:80px; margin-bottom:180px;">
             <img src="{% static 'images/공연소개_1.png' %}" alt="공연소개 이미지" style="display: block; margin: 0 auto; width:80%;">
-            {% for imgurl in content_dict.INFO_URLS %}
-                <img src="{{ imgurl }}" alt="Additional Image" style="display: block; margin: -23px auto; max-width: 100%; height: auto;">
-            {% endfor %}
+            <div class="prf_box">
+                {% for imgurl in content_dict.INFO_URLS %}
+                <p style="text-align: center;">
+                    <img src="{{ imgurl }}" alt="Additional Image" style="display: block; margin: -23px auto; max-width: 100%; height: auto;">
+                {% endfor %}
+                </p>
+            </div>
+            <div class="prf_more_btn" style="text-align: center; margin-top:20px;">
+                <button type="button" class="collaspeDetails" style="display: inline-block; width:80%; height:100px;">
+                    <span class="collaspeText">공연 소개 접기</span>
+                </button>
+            </div>            
             <img src="{% static 'images/api_안내문구.png' %}" alt="무단도용 안내" style="display: block; margin: 0 auto; width:80%;">
         </div>
     </div>
