@@ -6,3 +6,10 @@
 /myweb/migrations/__pycache__
 db.sqlite3
 *.pyc
+myweb/data/data_20240812/all_detail_list_20240812.csv
+myweb/data/data_20240812/daily_final_20240813.csv
+myweb/data/data_20240812/final_musical_detail_20240812.csv
+myweb/data/data_20240812/performance_list_20240812.csv
+myweb/data/data_20240812/top10_list_20240812.csv
+myweb/data/data_20240812/all_detail_list_20240813.csv
+myweb/data/data_20240812/performance_list_20240813.csv
