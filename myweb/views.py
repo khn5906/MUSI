@@ -17,6 +17,7 @@ from django.shortcuts import render
 logger = logging.getLogger(__name__)
 current_date = datetime.now().strftime('%Y%m%d')
 
+
 def read_and_process_file(date_str, file_path):
         path=f'myweb/data/data_{date_str}/'
         path+=file_path
@@ -33,10 +34,10 @@ def home(request):
     except Exception as e:
         print(f'예외발생: {e}')
         yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
-        file_path=f'final_musical_detail_{yesterday}.csv'
+        file_path=f'top10_list_{yesterday}.csv'
         df = read_and_process_file(yesterday, file_path)
     
-    rank_df=df[['PRFID','PRFNM','POSTER']]
+    rank_df=df[['PRFID','PRFNM','POSTER','D_DAY']]
     rank_list=rank_df.values.tolist()
     # [poster, name, prfid] 리스트에 넣기
 
@@ -151,6 +152,7 @@ def myinfoDel(request):
     msg += "</script>";
     return HttpResponse(msg);
     
+
 def contact(request):
     
     if request.method == 'GET':
@@ -224,45 +226,48 @@ def story(request):
 
     try:
         # 전체 공연 리스트 (제목, 공연장, 날짜, 자세히보기 버튼 -> reservation 페이지로 이동)
-        file_path=f'myweb/data/data_20240812/daily_final_{current_date}.csv'
-
+        file_path=f'myweb/data/data_{current_date}/daily_final_{current_date}.csv'
+        df = pd.read_csv(file_path, encoding='utf-8-sig')
+        df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
+    
     except Exception as e:
         print(f'예외발생: {e}')
         yesterday = (datetime.strptime(current_date, '%Y%m%d') - timedelta(1)).strftime('%Y%m%d')
-        file_path = f'myweb/data/data_20240812/daily_final_{yesterday}.csv'
+        file_path = f'myweb/data/data_{yesterday}/daily_final_{yesterday}.csv'
+        df = pd.read_csv(file_path, encoding='utf-8-sig')
+        df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
 
-    df=pd.read_csv(file_path, encoding='utf-8-sig')
-    df['POSTER'] = df['POSTER'].apply(lambda x: 'https' + x[4:] if x.startswith('http') else x)
-    # 포스터 경로 https로 변경하기
-
-    # 검색어 입력한 경우 처리
-    query=request.GET.get('query', '')
+    query = request.GET.get('query', '')
     print('query:', query)
-
+    
+    # 검색어가 있을 경우 필터링
     if query:
-        df=df[df['PRFNM'].str.contains(query, case=False)]
+        df = df[df['PRFNM'].str.contains(query, case=False)]
 
-    # 페이지에 필요한 컬럼만 가져오기
-    mainPage_df=df=df[['PRFID','PRFNM','PLACENM', 'PRFPDFROM','PRFPDTO','POSTER']]
-    mainPage_prfs=mainPage_df.values.tolist()
-    contents_list=[]
-    # print(mainPage_prfs)
+    # 검색 결과가 없을 경우
+    if df.empty:
+        content = {
+            'no_results': True,
+        }
+    else:
+        # 페이지에 필요한 컬럼만 가져오기
+        mainPage_df = df[['PRFID','PRFNM','PLACENM_x', 'PRFPDFROM','PRFPDTO','POSTER','D_DAY']]
+        mainPage_prfs = mainPage_df.values.tolist()
+        contents_list = []
 
-    col_names=mainPage_df.columns
-    for val in mainPage_prfs:
-        im_dict={}
-        for col, v in zip(col_names, val):
-            im_dict[col]=v
-        # print('im_dict:',im_dict)
-        contents_list.append(im_dict)
+        col_names = mainPage_df.columns
+        for val in mainPage_prfs:
+            im_dict = {}
+            for col, v in zip(col_names, val):
+                im_dict[col] = v
+            contents_list.append(im_dict)
 
-    print('------------------')
-    print(contents_list[0])
-    content={
-        'contents_list':contents_list,
-    }
+        content = {
+            'contents_list': contents_list,
+        }
 
-    return render(request, 'story.html', content);
+    return render(request, 'story.html', content)
+
 
 ##########################################################
 def reservation(request, prfid):
@@ -292,10 +297,11 @@ def reservation(request, prfid):
         content_dict['INFO_URLS'] = ast.literal_eval(content_dict['INFO_URLS'])
         content_dict['INFO_URLS'] = [url for url in content_dict['INFO_URLS']]
         
+        
         url_sites=content_dict['RELATES']
         
         content_dict['RELATES'] = { site: url for site, url in url_sites }
-    
+        print(content_dict)
         content = {
             'content_dict': content_dict,
         }

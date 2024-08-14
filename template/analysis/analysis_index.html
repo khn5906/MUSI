@@ -1,0 +1,60 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}analysis{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+
+{% block content %}
+<section class="ftco-section bg-light" data-section="analysis" style="height:100vh; padding-top: 250px;">
+    <div class="container">
+      <div class="row justify-content-center mb-5">
+        <div class="col-md-7 heading-section text-center ftco-animate">
+          <span class="subheading">analysis</span>
+          <h2 class="mb-4">What is your preference?</h2>  
+          <p style="color:#4e555b">관심 있는 키워드를 선택하세요!</p>      
+        </div>
+      </div>
+      <div class="container mt-5">			
+          <div class="container mt-5">			
+              <div class="text-center">
+                  <div class="preference-button" data-keyword="acting">acting</div>
+                  <div class="preference-button" data-keyword="performance">performance</div>
+                  <div class="preference-button" data-keyword="music">music</div>
+                  <div class="preference-button" data-keyword="production">production</div>
+                  <div class="preference-button" data-keyword="character">character</div>
+                  <div class="preference-button" data-keyword="story">story</div>
+              </div>
+          </div>
+          
+          <button id="go-button">GO</button> <!-- 새 버튼 -->
+          <form id="hidden-form" method="POST" action="{% url 'analysis' %}" style="display:none;">
+              {% csrf_token %}
+              <input type="hidden" name="selected_texts" id="selected_texts">
+          </form>
+
+      </div>
+</section>
+
+
+<section class="ftco-section">	
+	<div class="container-fluid p-0">
+		<!-- #전체너비사용 -->
+	</div>
+</section>
+<section class="ftco-section">	
+	<div class="container-fluid p-0">
+		<!-- #전체너비사용 -->
+	</div>
+</section>
+<section class="ftco-section">	
+	<div class="container-fluid p-0">
+		<!-- #전체너비사용 -->
+	</div>
+</section>
+{% endblock %}
+
+

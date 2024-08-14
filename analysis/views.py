@@ -5,6 +5,74 @@ import pandas as pd
 
 def analysis(request):
     try:
+        if request.method == 'GET':
+            return render(request, "analysis/analysis_index.html");
+
+        elif request.method == 'POST':
+            
+            selected_texts = request.POST.get('selected_texts')
+            selected_groups = selected_texts.split(',')  # 문자열을 리스트로 변환
+
+            # 데이터 로드 및 필요한 전처리 작업
+            data = load_data()
+            score_df = pd.read_csv('keyword_score.csv', index_col='title')
+            all_detail_list_df = pd.read_csv('all_detail_list.csv')  # PRFID를 포함한 데이터
+
+            comb_name = '_'.join(selected_groups)
+            top_titles = score_df.sort_values(by=comb_name, ascending=False).head(3).index.tolist()
+
+            top_reviews = []
+            keyword_scores = {}
+            reservation_urls = {}
+
+            for title in top_titles:
+                scores = {}
+                for group in selected_groups:
+                    scores[group] = score_df.loc[title, group] if group in score_df.columns else 0
+                keyword_scores[title] = scores
+
+                # all_detail_list_df에서 PRFID 추출
+                matching_row = all_detail_list_df[all_detail_list_df['PRFNM'] == title]
+                print('matching_row : ', matching_row)
+                if not matching_row.empty:
+                    prfid = matching_row.iloc[0]['PRFID']
+                    reservation_urls[title] = f"/reservation/{prfid}"
+                else:
+                    reservation_urls[title] = None
+
+                title_reviews = data[data['title2'] == title].sort_values(by='empathy', ascending=False).head(3)
+                review_list = []
+                for _, review in title_reviews.iterrows():
+                    review_list.append({
+                        'title': review['title'],
+                        'review': review['review'],
+                        'empathy': review['empathy'],
+                        'url': review['url']
+                    })
+                top_reviews.append({'title': title, 'reviews': review_list})
+            print('reservation_urls : ', reservation_urls)
+            # 여기에서 top_reviews에 keyword_scores와 reservation_urls 병합
+            for item in top_reviews:
+                title = item['title']
+                labels = list(keyword_scores[title].keys())  # 키워드 그룹 이름들
+                values = list(keyword_scores[title].values())  # 해당 타이틀의 점수들
+                item['keyword_scores'] = keyword_scores.get(title, {})
+                item['reservation_url'] = reservation_urls.get(title)
+                item['radar_chart'] = generate_radar_chart(title, labels, values)
+
+            return render(request, 'analysis/analysis.html', {
+                'top_reviews': top_reviews,
+                'selected_groups': selected_groups,
+            })
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+def analysis_review(request):
+    try:
         if request.method == 'POST':
             
             selected_texts = request.POST.get('selected_texts')
