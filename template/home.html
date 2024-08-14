@@ -116,9 +116,10 @@
 				opacity: 0.8;
 			}	
 
-			.square-button.select {
+			.square-button.active {
 				background-color: #d90000;
 				color: #fff;
+				border: none;
 			}
 
 			@media(max-width:1024px){
@@ -403,7 +404,7 @@
           <div class="col-md-7 heading-section text-center ftco-animate">
             <span class="subheading">analysis</span>
             <h2 class="mb-4">What is your preference?</h2>  
-			<p style="color:#4e555b">관심 있는 키워드를 선택하세요!</p>      
+			<p style="color:#4e555b">관심 있는 키워드를 선택하면 뮤지컬을 추천해드립니다!</p>      
           </div>
         </div>
         <div class="container mt-5">			
@@ -857,7 +858,7 @@
 
 	// 스크롤 이벤트를 감지하여 GO 버튼을 숨기거나 표시하는 함수
 	function handleScroll() {
-		document.querySelectorAll('.preference-button.select').forEach(btn => btn.classList.remove('select'));
+		/* document.querySelectorAll('.preference-button.select').forEach(btn => btn.classList.remove('select')); */
 		const goButton = document.getElementById('go-button');
 		if (goButton.style.display === 'block') {
 			goButton.style.display = 'none'; // 스크롤 시 GO 버튼 숨기기				
