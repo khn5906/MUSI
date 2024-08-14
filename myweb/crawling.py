@@ -20,7 +20,7 @@ def get_performance_info(service_key, current_date, pages=10, rows=50):
     award_list = []
     
     start_date = datetime.strptime(current_date, '%Y%m%d')
-    days = daterange_yield(start_date, 30)  # 정상 작동시 2개월동안의 공연 정보로 진행하기
+    days = daterange_yield(start_date, 30)  # 공연 기간 중 최근30일이 포함된 공연
 
     for day in days:
         stdate = day.strftime('%Y%m%d')
@@ -331,9 +331,9 @@ job()
 
 
 
-# # 매일 19시에 실행
-# schedule.every().day.at("19:10").do(job)
+# 매일 19시에 실행 (kopis 정보 업데이트 시간 반영)
+schedule.every().day.at("19:10").do(job)
 
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1)
+while True:
+    schedule.run_pending()
+    time.sleep(1)
