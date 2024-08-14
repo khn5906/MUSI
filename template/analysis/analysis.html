@@ -5,86 +5,100 @@
 {% block title %}analysis{% endblock %}
 
 {% block style %}
+<style>
+
+    
+    .review {  
+        width:85%; 
+        content:center;   
+        border: 1px solid #bbbbbb !important; /* review 테이블의 테두리 추가 */
+        border-radius: 10px !important; /* review 테이블의 테두리를 둥글게 */
+        border-collapse: separate; /* 테두리 충돌 방지 */
+        margin-left:5%;
+        margin-right:5%;
+    }
+
+</style>
 {% endblock %}
 
 
 {% block content %}
 <section class="ftco-section" style="padding-top: 200px;">    
     <div class="container">
-        <!-- <h1>분석 Results</h1> -->
+    
+    <table class="table table-borderless">
+
         {% if error %}
             <p>{{ error }}</p>
         {% else %}
-            <br>
-            <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; color: black; text-align: center; font-size: 1.5em;">
-                <img src="{% static 'images/any_title02.png' %}" style="width:90%;">              
-                <div style="padding-top:30px;">"당신의 선호취향을 반영하여 가장 높은 순위의 작품을 추천드리겠습니다."</div>
-                <!-- {{ selected_groups|join:", " }} -->
-            </div>
-    </div>
-    <div class="container">
-            <br>
-            {% for item in top_reviews %}
-                <div class="review-item" style="margin-top: 40px;">                      
-                    <h1 style="margin-left:70px; margin-top:50px; padding-left: 10px;"><img src="{% static 'images/any_01.png' %}" style="width:4%; margin-right:10px;">{{ item.title }}</h3>
-                    <div class="flex-container">
-                        <!-- <div class="keyword-scores">
-                            <h4>Keyword Scores</h4>
-                            <ul style="color: black;">
-                                {% for group, score in item.keyword_scores.items %}
-                                    <li>{{ group }}: {{ score }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div> -->
-
-                        <div class="radar-chart" style="display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top:100px;">
-                            <!-- 방사형 그래프 삽입 -->
-                            <img src="data:image/png;base64,{{ item.radar_chart }}" alt="{{ item.title }} Radar Chart">
-                        </div>
+            <tr>
+                <td colspan="2">
+                    <div style="justify-content: center; align-items: center; color: black; text-align: center; font-size: 1.5em;">
+                        <img src="{% static 'images/any_title02.png' %}" style="width:100%;">              
+                        <div style="padding-top:30px;">"당신의 선호취향을 반영하여 가장 높은 순위의 작품을 추천드리겠습니다."</div><br>
                     </div>
-                    
-                    <h3>Top Reviews</h4><br>
-                        <ul style="color: black; font-weight: bold; padding-left: 20px;">
-                            {% for review in item.reviews %}
-                                <li>
-                                    {{ review.review }}
-                                </li><br>
-                            {% endfor %}
-                        </ul>
-    
-                        <!-- <h4>Detail URL</h4> -->
+                </td>
+            </tr>            
+
+            {% for item in top_reviews %}
+                <tr>
+                    <td class="my-5" style="text-align: center; padding-top:100px;">
+                        <h1><img src="{% static 'images/any_01.png' %}" style="width:4%; margin-right:10px;"><{{ item.title }}></h1>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>                                    
+                        <div class="radar-chart" style="display: flex; justify-content: center; align-items: center; margin-top:20px;">
+                            <img src="data:image/png;base64,{{ item.radar_chart }}" alt="{{ item.title }} Radar Chart" style="border: 1px solid #000; padding:100px;">
+                        </div> 
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <h3 style="margin:5%;">Top Reviews</h3>                      
+                        {% for review in item.reviews %}
+                            <table class="review">                                
+                                <tr>
+                                    <td style="color: black;"> 
+                                        <p >
+                                            {% if review.star == 1 %}
+                                                <img src="{% static 'images/star1.png' %}" style="height: 20px;">
+                                            {% elif review.star == 2 %}
+                                                <img src="{% static 'images/star2.png' %}" style="height: 20px;">
+                                            {% elif review.star == 3 %}
+                                                <img src="{% static 'images/star3.png' %}" style="height: 20px;">
+                                            {% elif review.star == 4 %}
+                                                <img src="{% static 'images/star4.png' %}" style="height: 20px;">
+                                            {% elif review.star == 5 %}
+                                                <img src="{% static 'images/star5.png' %}" style="height: 20px;">
+                                            {% endif %}
+                                             / 공감 {{ review.empathy }}
+                                        </p>                                        
+                                        <p style="color: black;">{{ review.review }}</p>
+                                    </td>                                   
+                                </tr>                                
+                            </table>
+                            <br>                            
+                        {% endfor %}
+
                         <p style="display: flex; justify-content: center; align-items: center; flex-direction: column; font-size: 1.5em;">
                             {% if item.reservation_url %}
-                                <a href="{{ item.reservation_url }}" target="_blank">More Detail</a>
+                                <button class="square-button" href="{{ item.reservation_url }}" target="_blank">More Detail</button>
                             {% else %}
                                 <span style="color: red;">No reservation link available</span>
                             {% endif %}
                         </p>
-
-                </div>
-                <hr><br>
+                    </td>
+                </tr>             
             {% endfor %}
         {% endif %}
+    
+    </table>
     </div>
 </section>
-
-
-
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
-<section class="ftco-section">	
-	<div class="container-fluid p-0">
-		<!-- #전체너비사용 -->
-	</div>
-</section>
 {% endblock %}
+
 
 

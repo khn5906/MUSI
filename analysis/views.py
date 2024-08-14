@@ -48,7 +48,8 @@ def analysis(request):
                     review_list.append({
                         'title': review['title'],
                         'review': review['review'],
-                        'empathy': review['empathy'],
+                        'empathy': int(review['empathy']),
+                        'star': int(review['star']),
                         'url': review['url']
                     })
                 top_reviews.append({'title': title, 'reviews': review_list})
