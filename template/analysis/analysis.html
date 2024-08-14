@@ -30,9 +30,7 @@
 {% block content %}
 <section class="ftco-section" style="padding-top: 200px;">    
     <div class="container">
-    
     <table class="table table-borderless">
-
         {% if error %}
             <p>{{ error }}</p>
         {% else %}
@@ -44,14 +42,12 @@
                     </div>
                 </td>
             </tr>            
-
             {% for item in top_reviews %}
                 <tr>
                     <td class="my-5" style="text-align: center; padding-top:100px;">
                         <h2><img src="{% static 'images/any_01.png' %}" style="width:4%; margin-right:10px;"><{{ item.title }}></h2>
                     </td>
                 </tr>
-
                 <tr>
                     <td>                                    
                         <div class="radar-chart" style="display: flex; justify-content: center; align-items: center; margin-top:20px;">
@@ -59,7 +55,6 @@
                         </div> 
                     </td>
                 </tr>
-
                 <tr>
                     <td>
                         <h3 style="margin-left:70px; margin-top:50px; margin-bottom:30px;">Top Reviews</h3>                      
@@ -87,7 +82,6 @@
                             </table>
                             <br>                            
                         {% endfor %}
-
                         <p style="display: flex; justify-content: center; align-items: center; flex-direction: column; font-size: 1.5em;">
                             {% if item.reservation_url %}
                                 <a class="square-button" href="{{ item.reservation_url }}">More Detail</a>
@@ -99,7 +93,6 @@
                 </tr>             
             {% endfor %}
         {% endif %}
-    
     </table>
     </div>
 </section>
