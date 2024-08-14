@@ -134,9 +134,9 @@
                         <div class="prf_details">
                             <p class="date" style="margin-bottom: 0px !important; margin-left:5px;">{{ content.PRFPDFROM }} ~ {{ content.PRFPDTO }}
 							{% if content.D_DAY != 0 %}
-                                <span class="d-day" style="margin-left: 15px; color: rgb(244, 73, 73); font-size: 12px;">(D-{{ content.D_DAY }})</span>
+                                <span class="d-day" style="margin-left: 15px; color: rgb(244, 73, 73); font-size: 12px;">({{ content.D_DAY }} Days)</span>
 							{% else %}
-								<span class="d-day" style="margin-left: 15px; color: rgb(244, 73, 73); font-size: 12px;">D-day</span>
+								<span class="d-day" style="margin-left: 15px; color: rgb(244, 73, 73); font-size: 13px; font-weight:bold;">Last Day</span>
 							{% endif %}</p>
                             <p class="place" style="margin-top: 0px !important; margin-left:4px;">{{ content.PLACENM_x }}</p>
                         </div>

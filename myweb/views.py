@@ -40,9 +40,16 @@ def home(request):
     rank_df=df[['PRFID','PRFNM','POSTER','D_DAY']]
     rank_list=rank_df.values.tolist()
     # [poster, name, prfid] 리스트에 넣기
+
+    # CSV 파일 로드
+    df = pd.read_csv('review_data.csv')  # 실제 경로로 수정
+
+    # 중복되지 않는 title2 값 추출
+    titles = df['title2'].unique()
     
     content={
         'rank_list':rank_list,
+        'titles': titles,
     }
     return render(request, 'home.html', content)
 

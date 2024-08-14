@@ -5,6 +5,7 @@ import re
 from konlpy.tag import Okt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics.pairwise import cosine_similarity
 from collections import defaultdict
 from itertools import chain, combinations
 
@@ -175,3 +176,40 @@ def generate_radar_chart(title, labels, values, color='blue', alpha=0.25):
     plt.close(fig)
 
     return image_base64
+
+def process_user_input(title, rating, review):
+    # review_data.csv 파일 로드
+    df = pd.read_csv('review_data.csv')  # 실제 경로로 수정 필요
+
+    # stopword.csv 파일 로드
+    stopwords_df = pd.read_csv('stopword.csv', header=None)
+    stopwords_list = stopwords_df[0].tolist()  # 불용어 리스트 생성
+
+    # 사용자가 입력한 데이터를 새로운 행으로 추가
+    new_data = pd.DataFrame({'title2': [title], 'star': [rating], 'review': [review], 'empathy': [0], 'url': [''], 'label': [1]})
+    df = pd.concat([df, new_data], ignore_index=True)
+
+    # 리뷰 텍스트 벡터화 (TF-IDF) - 불용어 적용
+    tfidf = TfidfVectorizer(stop_words=stopwords_list)
+    tfidf_matrix = tfidf.fit_transform(df['review'])
+
+    # 코사인 유사도를 계산하여 유사한 타이틀을 찾음
+    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+
+    # 입력된 title2의 인덱스를 가져옴
+    idx = df[df['title2'] == title].index[-1]  # 사용자가 입력한 최신 데이터의 인덱스를 가져옴
+
+    # 유사한 타이틀의 인덱스와 유사도를 정렬하여 상위 추천 타이틀을 선택
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+    # 가장 유사한 타이틀을 추출 (자기 자신을 제외) 및 입력된 타이틀과 일치하지 않는 타이틀만 포함
+    recommended_titles = []
+    for i in sim_scores:
+        recommended_title = df['title2'].iloc[i[0]]
+        if recommended_title != title:
+            recommended_titles.append(recommended_title)
+        if len(recommended_titles) >= 3:  # 상위 3개 추천
+            break
+    
+    return recommended_titles

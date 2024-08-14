@@ -354,7 +354,7 @@
 			<div class="col-md-12 heading-section text-center ftco-animate">
 			  <span class="subheading">musical</span>
 			  <h2 class="mb-4">What's ON</h2>
-			  <p style="color:#4e555b" class="font-korean">상영중인 뮤지컬 공연에 대한 모든 것!</p>			  
+			  <p style="color:#4e555b" class="font-korean">상연중인 뮤지컬 공연에 대한 모든 것!</p>			  
 			  <a href="{% url 'story' %}" class="square-button">MORE <span class="ion-ios-arrow-round-forward"></span></a>
 			</div>
 		  </div>
@@ -375,9 +375,9 @@
 							<!-- <span class="icon-expand"></span> -->
 						</div>
 						{% if content.D_DAY != 0 %}
-							<span class="d-day" style="margin-top:-10px; margin-left: 5px; color: rgb(244, 73, 73); font-size: 12px; letter-spacing: 0px;">(D-{{ d_day }})</span>
+							<span class="d-day" style="margin-top:-10px; margin-left: 5px; color: rgb(244, 73, 73); font-size: 12px; letter-spacing: 0px;">({{ d_day }} Days)</span>
 						{% else %}
-							<span class="d-day" style="margin-left: 5px; color: rgb(244, 73, 73); font-size: 12px; letter-spacing: 0px;">D-day</span>
+							<span class="d-day" style="margin-left: 5px; color: rgb(244, 73, 73); font-size: 13px; letter-spacing: 0px; font-weight:bold;">Last Day</span>
 						{% endif %}
 						<div class="text px-4">
 							<h3 style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -10px;"><a href="{% url 'reservation' id %}" style="white-space: nowrap;">{{ name }}</a></h3>
@@ -427,7 +427,40 @@
 		</div>
 
     </section>
-
+	<section class="ftco-section">    
+		<div class="container">
+			<h1>뮤지컬 추천 시스템</h1>
+			
+			<form method="POST" action="{% url 'process_input' %}">
+				{% csrf_token %}
+				<div class="form-group">
+					<label for="title">뮤지컬 타이틀:</label>
+					<select class="form-control" id="title" name="title" required>
+						<option value="" disabled selected>뮤지컬 타이틀을 선택하세요</option>
+						{% for title in titles %}
+							<option value="{{ title }}">{{ title }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="rating">별점 (1-5):</label>
+					<select class="form-control" id="rating" name="rating" required>
+						<option value="" disabled selected>별점을 선택하세요</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="review">리뷰:</label>
+					<textarea class="form-control" id="review" name="review" rows="4" placeholder="리뷰를 입력하세요" required></textarea>
+				</div>
+				<button type="submit" class="btn btn-primary">추천 받기</button>
+			</form>
+		</div>
+	</section>
 	<section class="ftco-section" data-section="team">
 		<div class="container">
 			<div class="row no-gutters justify-content-center pb-5">
@@ -614,8 +647,6 @@
     </section>
 	{% endif %}
 
-<<<<<<< HEAD
-=======
     <section class="ftco-section contact-section">
       <div class="container">
         <div class="row d-flex contact-info">
@@ -664,7 +695,6 @@
 			<div style="font-size: 16px; letter-spacing: -1px;">TOP</div>
 		</span>
 	</button>
->>>>>>> jeong_2.0.0
 	{% endblock %}
 
 	
