@@ -1,0 +1,24 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}Analysis 2 Results{% endblock %}
+
+{% block content %}
+<section class="ftco-section">    
+    <div class="container">
+        <h1>추천 결과</h1>
+        
+        {% if recommended_titles %}
+            <h3>당신이 좋아할 만한 작품들:</h3>
+            <ul style="color: black; font-weight: bold; padding-left: 20px;">
+                {% for title in recommended_titles %}
+                    <li>{{ title }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>추천할 작품이 없습니다.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

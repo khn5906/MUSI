@@ -398,7 +398,40 @@
 		</div>
 
     </section>
-
+	<section class="ftco-section">    
+		<div class="container">
+			<h1>뮤지컬 추천 시스템</h1>
+			
+			<form method="POST" action="{% url 'process_input' %}">
+				{% csrf_token %}
+				<div class="form-group">
+					<label for="title">뮤지컬 타이틀:</label>
+					<select class="form-control" id="title" name="title" required>
+						<option value="" disabled selected>뮤지컬 타이틀을 선택하세요</option>
+						{% for title in titles %}
+							<option value="{{ title }}">{{ title }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="rating">별점 (1-5):</label>
+					<select class="form-control" id="rating" name="rating" required>
+						<option value="" disabled selected>별점을 선택하세요</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="review">리뷰:</label>
+					<textarea class="form-control" id="review" name="review" rows="4" placeholder="리뷰를 입력하세요" required></textarea>
+				</div>
+				<button type="submit" class="btn btn-primary">추천 받기</button>
+			</form>
+		</div>
+	</section>
 	<section class="ftco-section" data-section="team">
 		<div class="container-fluid p-0">
 			<div class="row no-gutters justify-content-center pb-5">

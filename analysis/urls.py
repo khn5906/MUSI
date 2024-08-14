@@ -7,5 +7,6 @@ from django.conf import settings
 from . import views
 
 urlpatterns = [
-    path('analysis/', views.analysis, name='analysis'),   
+    path('analysis/', views.analysis, name='analysis'),
+    path('process_input/', views.process_input, name='process_input'),
 ]
