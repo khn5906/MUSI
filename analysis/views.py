@@ -1,9 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .utils import load_data, preprocess_reviews, calculate_tfidf, generate_radar_chart
-from .models import Review
+from .utils import load_data, generate_radar_chart, process_user_input
 import pandas as pd
-import re
 
 def analysis(request):
     try:
@@ -34,7 +32,7 @@ def analysis(request):
                 keyword_scores[title] = scores
 
                 # all_detail_list_df에서 PRFID 추출
-                matching_row = all_detail_list_df[all_detail_list_df['PRFNM'] == title]
+                matching_row = all_detail_list_df[all_detail_list_df['PRFNM'].str.contains(title)]
                 print('matching_row : ', matching_row)
                 if not matching_row.empty:
                     prfid = matching_row.iloc[0]['PRFID']
@@ -99,7 +97,7 @@ def analysis_review(request):
                 keyword_scores[title] = scores
 
                 # all_detail_list_df에서 PRFID 추출
-                matching_row = all_detail_list_df[all_detail_list_df['PRFNM'] == title]
+                matching_row = all_detail_list_df[all_detail_list_df['PRFNM'].str.contains(title[:4])]
                 print('matching_row : ', matching_row)
                 if not matching_row.empty:
                     prfid = matching_row.iloc[0]['PRFID']
@@ -107,7 +105,7 @@ def analysis_review(request):
                 else:
                     reservation_urls[title] = None
 
-                title_reviews = data[data['title2'] == title].sort_values(by='empathy', ascending=False).head(3)
+                title_reviews = data[data['title2'].str.contains(title)].sort_values(by='empathy', ascending=False).head(3)
                 review_list = []
                 for _, review in title_reviews.iterrows():
                     review_list.append({
@@ -138,3 +136,21 @@ def analysis_review(request):
 
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
+def process_input(request):
+    if request.method == 'POST':
+        # 사용자가 입력한 데이터 가져오기
+        title = request.POST.get('title')
+        rating = float(request.POST.get('rating'))
+        review = request.POST.get('review')
+
+        # 추천 알고리즘 실행 (협업 필터링)
+        recommended_titles = process_user_input(title, rating, review)
+
+        # 추천 결과를 템플릿에 전달
+        return render(request, 'analysis/analysis2.html', {
+            'recommended_titles': recommended_titles
+        })
+    # GET 요청일 경우, 입력 폼이 있는 페이지로 리다이렉트
+    return render(request, 'home.html')
+
+# views.py
