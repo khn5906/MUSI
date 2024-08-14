@@ -375,9 +375,9 @@
 							<!-- <span class="icon-expand"></span> -->
 						</div>
 						{% if content.D_DAY != 0 %}
-							<span class="d-day" style="margin-top:-10px; margin-left: 5px; color: rgb(244, 73, 73); font-size: 12px; letter-spacing: 0px;">(D-{{ d_day }})</span>
+							<span class="d-day" style="margin-top:-10px; margin-left: 5px; color: rgb(244, 73, 73); font-size: 12px; letter-spacing: 0px;">({{ d_day }} Days)</span>
 						{% else %}
-							<span class="d-day" style="margin-left: 5px; color: rgb(244, 73, 73); font-size: 12px; letter-spacing: 0px;">last day</span>
+							<span class="d-day" style="margin-left: 5px; color: rgb(244, 73, 73); font-size: 13px; letter-spacing: 0px; font-weight:bold;">Last Day</span>
 						{% endif %}
 						<div class="text px-4">
 							<h3 style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -10px;"><a href="{% url 'reservation' id %}" style="white-space: nowrap;">{{ name }}</a></h3>

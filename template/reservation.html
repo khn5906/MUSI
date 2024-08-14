@@ -115,10 +115,10 @@
                                         <li class="infoItem">
                                             <strong class="infoLabel">공연기간 </strong>
                                             <div class="infoDesc">{{ content_dict.PRFPDFROM }} ~ {{ content_dict.PRFPDTO }}</div>
-                                            {% if content.D_DAY != 0 %}
-                                                <span class="d-day" style="margin-left: 15px; margin-top:4px; color: rgb(244, 73, 73); font-size: 12px;">(D-{{ content_dict.D_DAY }})</span>
+                                            {% if content_dict.D_DAY != 0 %}
+                                                <span class="d-day" style="margin-left: 15px; margin-top:4px; color: rgb(244, 73, 73); font-size: 12px;">({{ content_dict.D_DAY }} Days)</span>
                                             {% else %}
-                                                <span class="d-day" style="margin-left: 15px; color: rgb(244, 73, 73); font-size: 12px;">last day</span>
+                                                <span class="d-day" style="margin-left: 15px; color: rgb(244, 73, 73); font-size: 13px; font-weight:bold;">Last Day</span>
                                             {% endif %}</p>
                                         </li>
                                         <li class="infoItem">
