@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .utils import load_data, generate_radar_chart, process_user_input
 import pandas as pd
+from rapidfuzz import process
 
 def analysis(request):
     try:
@@ -31,16 +32,44 @@ def analysis(request):
                     scores[group] = score_df.loc[title, group] if group in score_df.columns else 0
                 keyword_scores[title] = scores
 
+                # # all_detail_list_df에서 PRFID 추출
+                # matching_row = all_detail_list_df[all_detail_list_df['PRFNM'].str.contains(title)]
+                # print('matching_row : ', matching_row)
+                # if not matching_row.empty:
+                #     prfid = matching_row.iloc[0]['PRFID']
+                #     reservation_urls[title] = f"/reservation/{prfid}"
+                # else:
+                #     reservation_urls[title] = None
                 # all_detail_list_df에서 PRFID 추출
-                matching_row = all_detail_list_df[all_detail_list_df['PRFNM'].str.contains(title)]
-                print('matching_row : ', matching_row)
+
+                matching_row = all_detail_list_df[all_detail_list_df['PRFNM'] == title]
+
                 if not matching_row.empty:
+                    # 정확히 일치하는 경우
                     prfid = matching_row.iloc[0]['PRFID']
                     reservation_urls[title] = f"/reservation/{prfid}"
                 else:
-                    reservation_urls[title] = None
+                    # title과 PRFNM 중 하나가 다른 하나를 포함하는 경우
+                    contains_row = all_detail_list_df[all_detail_list_df['PRFNM'].str.contains(title) | all_detail_list_df['PRFNM'].apply(lambda x: title in x)]
+                    
+                    if not contains_row.empty:
+                        # 포함되는 경우 중 첫 번째 항목 선택
+                        prfid = contains_row.iloc[0]['PRFID']
+                        reservation_urls[title] = f"/reservation/{prfid}"
+                    else:
+                        # 정확히 일치하지 않는 경우 유사도 계산
+                        prfnms = all_detail_list_df['PRFNM'].tolist()
+                        match, score, idx = process.extractOne(title, prfnms)
 
-                title_reviews = data[data['title2'] == title].sort_values(by='empathy', ascending=False).head(3)
+                        if score > 80:  # 유사도 점수가 80보다 클 때만 진행 (1~100점)
+                            prfid = all_detail_list_df.iloc[idx]['PRFID']
+                            reservation_urls[title] = f"/reservation/{prfid}"
+                            print(idx)
+                        else:
+                            reservation_urls[title] = None
+                        
+                title_reviews = data[data['title2'] == title].sort_values(by=['empathy', 'star'], ascending=[False, False]).head(3)
+                
                 review_list = []
                 for _, review in title_reviews.iterrows():
                     review_list.append({
@@ -78,6 +107,7 @@ def analysis_review(request):
 
     # 중복되지 않는 title2 값 추출
     titles = df['title2'].unique()
+    
     content={
         'titles': titles,
     }
@@ -89,31 +119,13 @@ def process_input(request):
         title = request.POST.get('title')
         rating = float(request.POST.get('rating'))
         review = request.POST.get('review')
-        data = load_data()
+
         # 추천 알고리즘 실행 (협업 필터링)
         recommended_titles = process_user_input(title, rating, review)
 
-        # 중복값 제거
-        recommended_titles = list(set(recommended_titles))
-
-        top_reviews = []
-        for title in recommended_titles:
-            title_reviews = data[data['title2'] == title].sort_values(by='empathy', ascending=False).head(3)
-            review_list = []
-            for _, review in title_reviews.iterrows():
-                review_list.append({
-                    'title': review['title'],
-                    'review': review['review'],
-                    'empathy': int(review['empathy']),
-                    'star': int(review['star']),
-                    'url': review['url']
-                })
-            top_reviews.append({'title': title, 'reviews': review_list})
-
         # 추천 결과를 템플릿에 전달
         return render(request, 'analysis/analysis2.html', {
-            'recommended_titles': recommended_titles,
-            'top_reviews': top_reviews,
+            'recommended_titles': recommended_titles
         })
     # GET 요청일 경우, 입력 폼이 있는 페이지로 리다이렉트
     return render(request, 'home.html')
