@@ -78,7 +78,6 @@ def analysis_review(request):
 
     # 중복되지 않는 title2 값 추출
     titles = df['title2'].unique()
-    
     content={
         'titles': titles,
     }
@@ -90,13 +89,31 @@ def process_input(request):
         title = request.POST.get('title')
         rating = float(request.POST.get('rating'))
         review = request.POST.get('review')
-
+        data = load_data()
         # 추천 알고리즘 실행 (협업 필터링)
         recommended_titles = process_user_input(title, rating, review)
 
+        # 중복값 제거
+        recommended_titles = list(set(recommended_titles))
+
+        top_reviews = []
+        for title in recommended_titles:
+            title_reviews = data[data['title2'] == title].sort_values(by='empathy', ascending=False).head(3)
+            review_list = []
+            for _, review in title_reviews.iterrows():
+                review_list.append({
+                    'title': review['title'],
+                    'review': review['review'],
+                    'empathy': int(review['empathy']),
+                    'star': int(review['star']),
+                    'url': review['url']
+                })
+            top_reviews.append({'title': title, 'reviews': review_list})
+
         # 추천 결과를 템플릿에 전달
         return render(request, 'analysis/analysis2.html', {
-            'recommended_titles': recommended_titles
+            'recommended_titles': recommended_titles,
+            'top_reviews': top_reviews,
         })
     # GET 요청일 경우, 입력 폼이 있는 페이지로 리다이렉트
     return render(request, 'home.html')

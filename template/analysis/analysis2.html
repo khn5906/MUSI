@@ -20,21 +20,7 @@
 </style>
 {% endblock %}
 {% block content %}
-<section class="ftco-section" style="padding-top: 200px;">    
-    <div class="container">
-        <h1>추천 결과</h1>
-        {% if recommended_titles %}
-            <h3>당신이 좋아할 만한 작품들:</h3>
-            <ul style="color: black; font-weight: bold; padding-left: 20px;">
-                {% for title in recommended_titles %}
-                    <li>{{ title }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>추천할 작품이 없습니다.</p>
-        {% endif %}
-    </div>
-</section>
+
 <section class="ftco-section" style="padding-top: 200px;">    
     <div class="container">
     <table class="table table-borderless">
@@ -86,7 +72,7 @@
                             {% if item.reservation_url %}
                                 <button class="square-button" href="{{ item.reservation_url }}" target="_blank">More Detail</button>
                             {% else %}
-                                <span style="color: red;">No reservation link available</span>
+                                <span style="color: red;"></span>
                             {% endif %}
                         </p>
                     </td>
