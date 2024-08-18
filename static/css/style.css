@@ -192,9 +192,6 @@ label {
 button {
   border-radius: 0; }
 
-button:focus {
-  outline: 1px dotted;
-  outline: 5px auto -webkit-focus-ring-color; }
 
 input,
 button,
@@ -212,7 +209,8 @@ input {
 
 button,
 select {
-  text-transform: none; }
+  text-transform: none;
+  border:none; }
 
 button,
 [type="button"],
@@ -225,7 +223,8 @@ button::-moz-focus-inner,
 [type="reset"]::-moz-focus-inner,
 [type="submit"]::-moz-focus-inner {
   padding: 0;
-  border-style: none; }
+  border-style: none;
+  border: none; }
 
 input[type="radio"],
 input[type="checkbox"] {
@@ -1331,7 +1330,7 @@ pre {
   background-color: transparent; }
   .table th,
   .table td {
-    padding: 0.75rem;
+    padding: 1rem;  /*여기 수정*/
     vertical-align: top;
     border-top: 1px solid #dee2e6; }
   .table thead th {
@@ -8974,9 +8973,12 @@ textarea.form-control {
       height: 10px;
       margin: 5px;
       border-radius: 50%;
+      border: none; 
       background: rgba(255, 255, 255, 0.1); }
       .testimony-section .owl-dots .owl-dot.active {
-        background: #d90000; }
+        background: #d90000;
+        border: none;
+       }
   .testimony-section:hover .owl-nav, .testimony-section:focus .owl-nav {
     opacity: 1; }
 
@@ -9105,7 +9107,7 @@ textarea.form-control {
     margin-bottom: 10px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 1px; }
+    letter-spacing: 1px;}
 
 .ftco-counter .icon {
   width: 70px;
