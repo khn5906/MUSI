@@ -41,8 +41,9 @@
   box-sizing: border-box; }
 
 html {
-  font-family: sans-serif;
+  font-family: sans-serif, 'Noto Serif KR';
   line-height: 1.15;
+
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
 
@@ -51,7 +52,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: 'Noto Serif KR', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -191,9 +192,6 @@ label {
 button {
   border-radius: 0; }
 
-button:focus {
-  outline: 1px dotted;
-  outline: 5px auto -webkit-focus-ring-color; }
 
 input,
 button,
@@ -211,7 +209,8 @@ input {
 
 button,
 select {
-  text-transform: none; }
+  text-transform: none;
+  border:none; }
 
 button,
 [type="button"],
@@ -224,7 +223,8 @@ button::-moz-focus-inner,
 [type="reset"]::-moz-focus-inner,
 [type="submit"]::-moz-focus-inner {
   padding: 0;
-  border-style: none; }
+  border-style: none;
+  border: none; }
 
 input[type="radio"],
 input[type="checkbox"] {
@@ -1330,7 +1330,7 @@ pre {
   background-color: transparent; }
   .table th,
   .table td {
-    padding: 0.75rem;
+    padding: 1rem;  /*여기 수정*/
     vertical-align: top;
     border-top: 1px solid #dee2e6; }
   .table thead th {
@@ -8013,7 +8013,7 @@ h1, h2, h3, h4, h5,
   color: #d90000 !important; }
 
 .ftco-navbar-light {
-  background: transparent !important;
+  background-color: transparent !important;
   position: absolute;
   top: 0;
   left: 0;
@@ -8022,7 +8022,7 @@ h1, h2, h3, h4, h5,
   padding-top: 30px; }
   @media (max-width: 991.98px) {
     .ftco-navbar-light {
-      background: #000 !important;
+      background-color: transparent !important;
       position: relative;
       top: 0;
       padding-top: 0;
@@ -8048,13 +8048,12 @@ h1, h2, h3, h4, h5,
       margin-right: 0px; } }
   .ftco-navbar-light .navbar-nav > .nav-item > .nav-link {
     font-size: 17px;
-    font-weight: bold;
+    font-weight: 600;
     padding-top: .7rem;
     padding-bottom: .7rem;
     padding-left: 20px;
     padding-right: 15px;
     color: #000;
-    font-weight: 400;
     opacity: 1 !important; }
     .ftco-navbar-light .navbar-nav > .nav-item > .nav-link span {
       position: relative;
@@ -8114,7 +8113,7 @@ h1, h2, h3, h4, h5,
     left: 0;
     top: 0;
     margin-top: -130px;
-    background: #fff !important;
+    background: transparent !important;
     /* 여기수정함 */
     padding: 0 15px; }
     @media (max-width: 991.98px) {
@@ -8162,6 +8161,7 @@ h1, h2, h3, h4, h5,
       .ftco-navbar-light.scrolled .nav-link.active {
         color: #d90000 !important; }
     .ftco-navbar-light.scrolled.awake {
+      background-color: transparent;
       margin-top: 0px;
       -webkit-transition: .3s all ease-out;
       -o-transition: .3s all ease-out;
@@ -8476,9 +8476,11 @@ h1, h2, h3, h4, h5,
     height: 10px;
     margin: 5px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.1); }
+    background: rgba(0, 0, 0, 0.1);
+    border: none; }
     .ftco-project .owl-dots .owl-dot.active {
-      background: #d90000; }
+      background: #d90000;
+      border: none; }
 
 .staff {
   overflow: hidden;
@@ -8971,9 +8973,12 @@ textarea.form-control {
       height: 10px;
       margin: 5px;
       border-radius: 50%;
+      border: none; 
       background: rgba(255, 255, 255, 0.1); }
       .testimony-section .owl-dots .owl-dot.active {
-        background: #d90000; }
+        background: #d90000;
+        border: none;
+       }
   .testimony-section:hover .owl-nav, .testimony-section:focus .owl-nav {
     opacity: 1; }
 
@@ -9102,7 +9107,7 @@ textarea.form-control {
     margin-bottom: 10px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 1px; }
+    letter-spacing: 1px;}
 
 .ftco-counter .icon {
   width: 70px;

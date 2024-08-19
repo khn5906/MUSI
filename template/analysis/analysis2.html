@@ -1,0 +1,85 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}Analysis 2 Results{% endblock %}
+{% block style %}
+<style>
+
+    
+    .review {  
+        width:85%; 
+        content:center;   
+        border: 1px solid #bbbbbb !important; /* review 테이블의 테두리 추가 */
+        border-radius: 10px !important; /* review 테이블의 테두리를 둥글게 */
+        border-collapse: separate; /* 테두리 충돌 방지 */
+        margin-left:5%;
+        margin-right:5%;
+    }
+
+</style>
+{% endblock %}
+{% block content %}
+
+<section class="ftco-section" style="padding-top: 200px;">    
+    <div class="container">
+    <table class="table table-borderless">
+        {% if error %}
+            <p>{{ error }}</p>
+        {% else %}
+            <tr>
+                <td colspan="2">
+                    <div style="justify-content: center; align-items: center; color: black; text-align: center; font-size: 1.5em;">
+                        <img src="{% static 'images/any_title02.png' %}" style="width:100%;">              
+                        <div style="padding-top:30px;">"당신이 작성한 리뷰를 분석하여 좋아할만한 작품을 추천드리겠습니다."</div><br>
+                    </div>
+                </td>
+            </tr>            
+            {% for item in top_reviews %}
+                <tr>
+                    <td class="my-5" style="text-align: center; padding-top:100px;">
+                        <h1><img src="{% static 'images/any_01.png' %}" style="width:4%; margin-right:10px;"><{{ item.title }}></h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3 style="margin:5%;">Top Reviews</h3>                      
+                        {% for review in item.reviews %}
+                            <table class="review">                                
+                                <tr>
+                                    <td style="color: black;"> 
+                                        <p >
+                                            {% if review.star == 1 %}
+                                                <img src="{% static 'images/star1.png' %}" style="height: 20px;">
+                                            {% elif review.star == 2 %}
+                                                <img src="{% static 'images/star2.png' %}" style="height: 20px;">
+                                            {% elif review.star == 3 %}
+                                                <img src="{% static 'images/star3.png' %}" style="height: 20px;">
+                                            {% elif review.star == 4 %}
+                                                <img src="{% static 'images/star4.png' %}" style="height: 20px;">
+                                            {% elif review.star == 5 %}
+                                                <img src="{% static 'images/star5.png' %}" style="height: 20px;">
+                                            {% endif %}
+                                             / 공감 {{ review.empathy }}
+                                        </p>                                        
+                                        <p style="color: black;">{{ review.review }}</p>
+                                    </td>                                   
+                                </tr>                                
+                            </table>
+                            <br>                            
+                        {% endfor %}
+                        <p style="display: flex; justify-content: center; align-items: center; flex-direction: column; font-size: 1.5em;">
+                            {% if item.reservation_url %}
+                                <button class="square-button" href="{{ item.reservation_url }}" target="_blank">More Detail</button>
+                            {% else %}
+                                <span style="color: red;"></span>
+                            {% endif %}
+                        </p>
+                    </td>
+                </tr>             
+            {% endfor %}
+        {% endif %}
+    </table>
+    </div>
+</section>
+{% endblock %}

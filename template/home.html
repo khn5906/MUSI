@@ -12,7 +12,7 @@
 	
 		<title>{% block title %}home{% endblock %}</title>
 		
-		<link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900" rel="stylesheet">		
+		<link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900" rel="stylesheet">
 		<link rel="stylesheet" href="{% static 'css/open-iconic-bootstrap.min.css' %}">
 		<link rel="stylesheet" href="{% static 'css/animate.css' %}">
 		<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
@@ -29,6 +29,11 @@
 		
 
 		<style>
+			body {
+				font-family: "Rubik" !important;
+				font-weight: 400;}
+
+
 			.video-container {
 				position: absolute;
 				width: 100%;
@@ -105,15 +110,16 @@
 				transition: background-color 0.3s, color 0.3s, transform 0.3s; /* transform에 대한 전환 추가 */
 				font-size: 16px; /* 기본 글꼴 크기 설정 */
 			}
-			
 
 			.square-button:hover {
 				color: #fff; /* 호버 시 글자 색 변경 */
+				opacity: 0.8;
 			}	
 
-			.square-button.select {
+			.square-button.active {
 				background-color: #d90000;
 				color: #fff;
+				border: none;
 			}
 
 			@media(max-width:1024px){
@@ -186,7 +192,8 @@
 				color: #000 !important; /* 텍스트 색상 */
 				padding: 0px 0px 10px 20px; /* 항목 안쪽 여백 */
 				text-decoration: none; /* 텍스트 장식 제거 */
-				font-size: 15px !important;			
+				font-size: 15px !important;		
+				
 			}
 
 			/* 드롭다운 항목 호버 스타일 */
@@ -206,7 +213,6 @@
 				border: none !important; /* 클릭 시 테두리를 제거 */
 				text-align:left;
 				margin-left: 20 ;
-				
 			}
 
 			/* 네비게이션 바의 드롭다운 항목을 좌우 여백 없이 설정 */
@@ -216,13 +222,31 @@
 			}						
 
 			.depth_bg {
-			position:fixed;   
-			z-index: 10;
-			width: 100%;
-            background-color: #fff !important;
-            height: 0px;
-            transition: height 0.3s ease;				
+				position:fixed;   
+				z-index: 10;
+				width: 100%;
+				background-color: #b6b6b6 !important;
+				height: 0px;
+				transition: height 0.3s ease;	
+				opacity: 0.1;			
         	}
+
+			#btn_topGo {
+				background-color: rgb(219, 21, 21); /* 배경색을 빨간색으로 설정 */
+				text-align: center; /* 텍스트를 가운데 정렬 */
+				border: none; /* 테두리 제거 */
+				cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */
+				padding: 10px; /* 버튼 내부 여백 설정 */
+				position: fixed; /* 화면 고정 */
+				bottom: 50px; /* 화면 하단에서 20px 위로 위치 */
+				right: 20px; /* 화면 오른쪽에서 20px 왼쪽으로 위치 */
+				z-index: 1000; /* 다른 요소들 위에 나타나도록 설정 */
+				width: 3.5%;
+				right: 0px; outline:none; 
+				transition: opacity 0.5s ease, visibility 0.5s ease; 
+				opacity: 0; 
+				visibility: hidden;
+			}
 
 		</style>
 		{% block style %}{% endblock %}
@@ -233,7 +257,7 @@
 	<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar" style="z-index:11;">
 		<div class="container-fluid mx-5">
 			<!-- <img src="{% static 'images/musimark.png' %}" style="width:40px; margin-right:5px;">  -->
-			<a class="navbar-brand" style="margin-left:70px;" href="http://localhost:8000/home/" data-nav-section="home"><span>  MUSI</span></a>
+			<a class="navbar-brand" style="margin-left:70px;" href="{% url 'home' %}" data-nav-section="home"><span>  MUSI</span></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 				<!-- js-fh5co-nav-toggle fh5co-nav-toggle -->
 				<span class="oi oi-menu"></span> Menu
@@ -247,8 +271,9 @@
 							What's ON
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/story/'">All About</a>
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/tableau_musi/'">한눈에 보는 뮤지컬</a>
+							<a class="dropdown-item" onclick="document.location.href='{% url 'story' %}'">Reservation</a>
+							<a class="dropdown-item" onclick="document.location.href='{% url 'tableau_musi' %}'">All about Musical</a>
+							<a class="dropdown-item" onclick="document.location.href='{% url 'tableau_musi' %}'">All about Theater</a>
 						</div>
 					</li>
 					<li class="nav-item dropdown mx-3">
@@ -256,16 +281,21 @@
 							Analysis
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown2">
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/analysis/analysis/'">Analysis</a>
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/analysis/visualization/'">Visualization</a>
+							<a class="dropdown-item" onclick="document.location.href='{% url 'analysis' %}'">Keyword Analysis</a>						
+							<a class="dropdown-item" onclick="document.location.href='{% url 'review' %}'">Review Analysis</a>						
 						</div>
-					</li>
+					</li>					
 					<li class="nav-item dropdown mx-3">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" data-nav-section="team" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<a class="nav-link dropdown-toggle" href="{% url 'contact' %}" id="navbarDropdown3" data-nav-section="team" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							Team
 						</a>
+					</li>
+					<li class="nav-item dropdown mx-3">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" data-nav-section="contact" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Contact
+						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown3">
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/contact/'">Contact</a>							
+							<a class="dropdown-item" onclick="document.location.href='{% url 'contact' %}'">Contact</a>							
 						</div>
 					</li>
 
@@ -275,19 +305,19 @@
 							MY
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown4">
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/myinfo/'">Info</a>
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/logout/'">logout</a>
+							<a class="dropdown-item" onclick="document.location.href='{% url 'myinfo' %}'">Info</a>
+							<a class="dropdown-item" onclick="document.location.href='{% url 'logout' %}'">logout</a>
 						</div>
 					</li>
 					{% else %}
 					
 					<li class="nav-item dropdown mx-3">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown5" data-nav-section="sign" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Sign in
+							Sign In
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown5">
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/register/'">Sign Up</a>
-							<a class="dropdown-item" onclick="document.location.href='http://localhost:8000/login/'">Sign In</a>
+							<a class="dropdown-item" onclick="document.location.href='{% url 'register' %}'">Sign Up</a>
+							<a class="dropdown-item" onclick="document.location.href='{% url 'login' %}'">Sign In</a>
 							
 						</div>
 					</li>
@@ -307,7 +337,7 @@
 				<!-- class="row no-gutters slider-text js-fullheight align-items-center" -->
 				<div class="col-md-8 ftco-animate" data-scrollax="properties: { translateY: '70%' }" style="margin-top:270px;">
 				<h1 class="mb-4 text_over" style="color:black; margin-left:25%;" data-scrollax="properties: { translateY: '30%',  }">What is your preference?</h1>
-				<p class="mb-4" style="color:#4e555b; margin-left:25%;">Let's go to the world of musicals with musi</p>		
+				<p class="mb-4" style="color:#4e555b; margin-left:25%;" data-scrollax="properties: { translateY: '30%',  }">Let's go to the world of musicals with musi</p>		
 				</div>					
 			</div>
 			<video autoplay muted loop class="logo-video">
@@ -325,8 +355,8 @@
 			<div class="col-md-12 heading-section text-center ftco-animate">
 			  <span class="subheading">musical</span>
 			  <h2 class="mb-4">What's ON</h2>
-			  <p style="color:#4e555b">상영중인 뮤지컬 공연에 대한 모든 것!</p>			  
-			  <a href="http://localhost:8000/story/" class="square-button">MORE <span class="ion-ios-arrow-round-forward"></span></a>
+			  <p style="color:#4e555b" class="font-korean">상연중인 뮤지컬 공연에 대한 모든 것!</p>			  
+			  <a href="{% url 'story' %}" class="square-button">MORE <span class="ion-ios-arrow-round-forward"></span></a>
 			</div>
 		  </div>
 		  <div class="row">
@@ -336,91 +366,28 @@
 				<i class="icon-arrow-left"></i>
 			  </div>
 			  <div class="carousel-project owl-carousel" style="width: 100%; height:100%;">
+				<!-- 이미지나 예매하기 버튼 클릭하면 해당 reservation 페이지로 이동 -->
+				{% for id, name, poster, d_day in rank_list %}
 				<div class="item">
-				  <div class="project">
-					<div class="img">
-					  <img src="{% static 'images/project-1.jpg' %}" class="img-fluid" alt="Colorlib Template">
-					  <a href="{% static 'images/project-1.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-						<span class="icon-expand"></span>
-					  </a>
+					<div class="project">
+						<div class="img">
+							<!-- <a href="http://localhost:8000/reservation/{{ id }}/" class="icon image-popup d-flex justify-content-center align-items-center"> -->
+							<img src="{{ poster }}" class="img-fluid" alt="Colorlib Template" style="width: 350px !important; height: 350px !important;">
+							<!-- <span class="icon-expand"></span> -->
+						</div>
+						{% if content.D_DAY != 0 %}
+							<span class="d-day" style="margin-top:-10px; margin-left: 5px; color: rgb(244, 73, 73); font-size: 12px; letter-spacing: 0px;">({{ d_day }} Days)</span>
+						{% else %}
+							<span class="d-day" style="margin-left: 5px; color: rgb(244, 73, 73); font-size: 13px; letter-spacing: 0px; font-weight:bold;">Last Day</span>
+						{% endif %}
+						<div class="text px-4">
+							<h3 style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -10px;"><a href="{% url 'reservation' id %}" style="white-space: nowrap;">{{ name }}</a></h3>
+							<p class="mb-0" style="margin-top: 15px;"><a href="{% url 'reservation' id %}" class="custom-btn">예매하기<span class="ion-ios-arrow-round-forward"></span></a></p>
+						</div>
 					</div>
-					<div class="text px-4">
-					  <h3><a href="#">Office Interior Design</a></h3>
-					  <p class="mb-0"><a href="#" class="custom-btn">예매하기<span class="ion-ios-arrow-round-forward"></span></a></p>
-					</div>
-				  </div>
 				</div>
-				<div class="item">
-				  <div class="project">
-					<div class="img">
-					  <img src="{% static 'images/project-2.jpg' %}" class="img-fluid" alt="Colorlib Template">
-					  <a href="{% static 'images/project-2.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-						<span class="icon-expand"></span>
-					  </a>
-					</div>
-					<div class="text px-4">
-					  <h3><a href="#">Office Interior Design</a></h3>
-					  <p class="mb-0"><a href="#" class="custom-btn">예매하기<span class="ion-ios-arrow-round-forward"></span></a></p>
-					</div>
-				  </div>
-				</div>
-				<div class="item">
-				  <div class="project">
-					<div class="img">
-					  <img src="{% static 'images/project-3.jpg' %}" class="img-fluid" alt="Colorlib Template">
-					  <a href="{% static 'images/project-3.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-						<span class="icon-expand"></span>
-					  </a>
-					</div>
-					<div class="text px-4">
-					  <h3><a href="#">Office Interior Design</a></h3>
-					  <p class="mb-0"><a href="#" class="custom-btn">예매하기<span class="ion-ios-arrow-round-forward"></span></a></p>
-					</div>
-				  </div>
-				</div>
-				<div class="item">
-				  <div class="project">
-					<div class="img">
-					  <img src="{% static 'images/project-4.jpg' %}" class="img-fluid" alt="Colorlib Template">
-					  <a href="{% static 'images/project-4.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-						<span class="icon-expand"></span>
-					  </a>
-					</div>
-					<div class="text px-4">
-					  <h3><a href="#">Office Interior Design</a></h3>
-					  <p class="mb-0"><a href="#" class="custom-btn">예매하기<span class="ion-ios-arrow-round-forward"></span></a></p>
-					</div>
-				  </div>
-				</div>
-				<div class="item">
-				  <div class="project">
-					<div class="img">
-					  <img src="{% static 'images/project-5.jpg' %}" class="img-fluid" alt="Colorlib Template">
-					  <a href="{% static 'images/project-5.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-						<span class="icon-expand"></span>
-					  </a>
-					</div>
-					<div class="text px-4">
-					  <h3><a href="#">Office Interior Design</a></h3>
-					  <p class="mb-0"><a href="#" class="custom-btn">예매하기<span class="ion-ios-arrow-round-forward"></span></a></p>
-					</div>
-				  </div>
-				</div>
-				<div class="item">
-				  <div class="project">
-					<div class="img">
-					  <img src="{% static 'images/project-6.jpg' %}" class="img-fluid" alt="Colorlib Template">
-					  <a href="{% static 'images/project-6.jpg' %}" class="icon image-popup d-flex justify-content-center align-items-center">
-						<span class="icon-expand"></span>
-					  </a>
-					</div>
-					<div class="text px-4">
-					  <h3><a href="#">Office Interior Design</a></h3>
-					  <p class="mb-0"><a href="#" class="custom-btn">예매하기<span class="ion-ios-arrow-round-forward"></span></a></p>
-					</div>
-				  </div>
-				</div>
-			  </div>
+				{% endfor %}
+			</div>
 			  <!-- Next Button -->
 			  <div class="custom-owl-next owl-nav">
 				<i class="icon-arrow-right"></i>
@@ -437,7 +404,7 @@
           <div class="col-md-7 heading-section text-center ftco-animate">
             <span class="subheading">analysis</span>
             <h2 class="mb-4">What is your preference?</h2>  
-			<p style="color:#4e555b">관심 있는 키워드를 선택하세요!</p>      
+			<p style="color:#4e555b">관심 있는 키워드를 선택하면 뮤지컬을 추천해드립니다!</p>      
           </div>
         </div>
         <div class="container mt-5">			
@@ -452,19 +419,61 @@
 				</div>
 			</div>
 			
-			<button id="go-button" onclick="document.location.href='http://localhost:8000/analysis/analysis'">GO</button> <!-- 새 버튼 -->
-				
+			<button id="go-button">GO</button> <!-- 새 버튼 -->
+			<form id="hidden-form" method="POST" action="{% url 'analysis' %}" style="display:none;">
+				{% csrf_token %}
+				<input type="hidden" name="selected_texts" id="selected_texts">
+			</form>
+
 		</div>
 
     </section>
-
+	<section class="ftco-section bg-light" data-section="analysis" style="height:100vh;">    
+		<div class="container">
+			<div class="row justify-content-center mb-5">
+				<div class="col-md-7 heading-section text-center ftco-animate">
+					<span class="subheading">analysis</span>
+					<h2 class="mb-4">What is your opinion?</h2>
+					<p style="color:#4e555b">관람하신 작품의 리뷰를 작성해주시면 당신의 취향을 분석해드립니다!</p>
+				</div>
+			</div>
+			<form method="POST" action="{% url 'process_input' %}">
+				{% csrf_token %}
+				<div class="form-group">
+					<label for="title">뮤지컬 타이틀:</label>
+					<select class="form-control" id="title" name="title" required>
+						<option value="" disabled selected>뮤지컬 타이틀을 선택하세요</option>
+						{% for title in titles %}
+							<option value="{{ title }}">{{ title }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="rating"><img src="{% static 'images/star5.png' %}" style="height: 20px;"></label>
+					<select class="form-control" id="rating" name="rating" required>
+						<option value="" disabled selected>별점을 선택하세요</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="review">리뷰:</label>
+					<textarea class="form-control" id="review" name="review" rows="4" placeholder="리뷰를 입력하세요" required></textarea>
+				</div>
+				<button type="submit" class="square-button">추천 받기</button>
+			</form>
+		</div>
+	</section>
 	<section class="ftco-section" data-section="team">
-		<div class="container-fluid p-0">
+		<div class="container">
 			<div class="row no-gutters justify-content-center pb-5">
 				<div class="col-md-12 heading-section text-center ftco-animate">
 					<span class="subheading">developer</span>
 					<h2 class="mb-4">Behind those Beautiful Works</h2>
-					<p Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
+					<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
 				</div>
 			</div>
 			<div class="row no-gutters">
@@ -560,10 +569,58 @@
 			</div>
 		</div>
 	</section>
+    <section class="ftco-section contact-section" data-section="contact">
+		<div class="container">
+		  <div class="col-md-12 heading-section text-center ftco-animate">
+			  <span class="subheading">contact</span>
+			  <h2 class="mb-4">Do you have any questions?</h2>
+			  <p style="color:#4e555b" class="font-korean">Please send your inquiries via email. We will do our best to respond as soon as possible.</p>
+			  <a href="{% url 'contact' %}" class="square-button">MORE <span class="ion-ios-arrow-round-forward"></span></a>
+		  </div>
+		  <div class="row d-flex contact-info" style="padding-top: 80px;">
+			<div class="col-md-6 col-lg-3 d-flex">
+				<div class="align-self-stretch box p-4 text-center">
+					<div class="icon d-flex align-items-center justify-content-center">
+						<span class="icon-map-signs"></span>
+					</div>
+					<h3 class="mb-4">Address</h3>
+				  <p style="color:#4e555b">서울특별시 동작구 장승배기로 171 노량진아이비빌딩 3층</p>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-3 d-flex">
+				<div class="align-self-stretch box p-4 text-center">
+					<div class="icon d-flex align-items-center justify-content-center">
+						<span class="icon-phone2"></span>
+					</div>
+					<h3 class="mb-4">Contact Number</h3>
+				  <p style="color:#4e555b"><a href="tel://1234567920">02-3673-2100</a></p>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-3 d-flex">
+				<div class="align-self-stretch box p-4 text-center">
+					<div class="icon d-flex align-items-center justify-content-center">
+						<span class="icon-paper-plane"></span>
+					</div>
+					<h3 class="mb-4">Email Address</h3>
+				  <p style="color:#4e555b"><a href="mailto:info@yoursite.com">wjdwjd1945@gmail.com</a></p>
+				</div>
+			</div>
+			<div class="col-md-6 col-lg-3 d-flex">
+				<div class="align-self-stretch box p-4 text-center">
+					<div class="icon d-flex align-items-center justify-content-center">
+						<span class="icon-globe"></span>
+					</div>
+					<h3 class="mb-4">Website</h3>
+				  <p><a href="{% url 'home' %}" style="color:#4e555b">http://localhost:8000/home/</a></p>
+				</div>
+			</div>
+		  </div>
+  
+	  </div>		
+	</section>
 	
 	{% if user.is_active %}	
 	{% else %}
-
     <section class="ftco-section contact-section ftco-no-pb" data-section="sign" style="height:100vh;">
       <div class="container">
 		<div class="auth-wrapper d-flex justify-content-center">
@@ -586,7 +643,7 @@
 							<button type="submit" class="btn btn-dark btn-block" onclick="pageSubmit()">Sign In</button>
 						</div>
 						<div class="text-center mt-4" style="color:black;">
-							1초 만에 회원가입하기 <a href="http://localhost:8000/register/" class="text-danger">Sign Up</a>							
+							1초 만에 회원가입하기 <a href="{% url 'register' %}" class="text-danger">Sign Up</a>							
 						</div>
 					</form>
 				</div>
@@ -623,7 +680,7 @@
           			<span class="icon-paper-plane"></span>
           		</div>
           		<h3 class="mb-4">Email Address</h3>
-	            <p style="color:#4e555b"><a href="mailto:info@yoursite.com">dpswpf5906@naver.com</a></p>
+	            <p style="color:#4e555b"><a href="mailto:info@yoursite.com">wjdwjd1945@gmail.com</a></p>
 	          </div>
           </div>
           <div class="col-md-6 col-lg-3 d-flex">
@@ -632,90 +689,21 @@
           			<span class="icon-globe"></span>
           		</div>
           		<h3 class="mb-4">Website</h3>
-	            <p><a href="http://localhost:8000/home/" style="color:#4e555b">http://localhost:8000/home/</a></p>
+	            <p><a href="{% url 'home' %}" style="color:#4e555b">http://localhost:8000/home/</a></p>
 	          </div>
           </div>
         </div>
       </div>
     </section>
+	<button type="button" id="btn_topGo" onclick="window.scrollTo(0,0);">
+		<span style="color: white; display: inline-block; text-align: center; line-height: 1.2;">
+			<div style="font-size: 20px; letter-spacing: -1px;">▲</div>
+			<div style="font-size: 16px; letter-spacing: -1px;">TOP</div>
+		</span>
+	</button>
 	{% endblock %}
+
 	
-	<script>
-		document.querySelectorAll('.preference-button').forEach(button => {
-			button.addEventListener('click', () => {
-				const selectedButtons = document.querySelectorAll('.preference-button.select');
-
-				// 만약 이미 세 개의 버튼이 선택되어 있고 새로운 버튼을 선택하려고 한다면 모든 선택을 해제합니다.
-				if (selectedButtons.length === 3 && !button.classList.contains('select')) {
-					selectedButtons.forEach(btn => btn.classList.remove('select'));
-					document.getElementById('arrow-button').style.display = 'none'; // 화살표 버튼 숨기기
-				} else {
-					// 선택된 상태라면 선택을 해제하고, 선택되지 않은 상태라면 선택합니다.
-					button.classList.toggle('select');
-				}
-
-				// 세 개의 버튼이 선택되면 GO 버튼과 화살표 버튼을 표시합니다.
-				const selectedCount = document.querySelectorAll('.preference-button.select').length;
-				if (selectedCount === 3) {
-					document.getElementById('go-button').style.display = 'block';
-					document.getElementById('arrow-button').style.display = 'block'; // 화살표 버튼 보이기										
-				} else {
-					document.getElementById('go-button').style.display = 'none';
-					document.getElementById('arrow-button').style.display = 'none'; // 화살표 버튼 숨기기
-					
-				}
-			});
-		});
-
-
-		// 스크롤 이벤트를 감지하여 GO 버튼을 숨기거나 표시하는 함수
-		function handleScroll() {
-			document.querySelectorAll('.preference-button.select').forEach(btn => btn.classList.remove('select'));
-			const goButton = document.getElementById('go-button');
-			if (goButton.style.display === 'block') {
-				goButton.style.display = 'none'; // 스크롤 시 GO 버튼 숨기기
-				
-			}
-			
-		}
-
-		// 스크롤 이벤트 리스너 추가
-		window.addEventListener('scroll', handleScroll);
-
-
-
-		function pageSubmit() {
-			const username = frm1.username.value;
-			const password = frm1.pwd.value;
-		  
-			// 빈 값 체크
-			if (username === '' || password === '') {
-			  alert("아이디와 비밀번호를 모두 입력해주세요.");
-			  return; // 함수 종료
-			}
-		  
-			frm1.method = "POST";
-			frm1.action = "http://localhost:8000/login/";
-			frm1.submit();
-		  }
-
-		document.addEventListener('DOMContentLoaded', function() {
-		const navbar = document.querySelector('.navbar.navbar-expand-lg.navbar-dark.ftco_navbar.bg-dark.ftco-navbar-light');
-		const depthBg = document.querySelector('.depth_bg');
-	
-		navbar.addEventListener('mouseover', function() {
-			depthBg.style.height = '250px';
-		});
-	
-		navbar.addEventListener('mouseout', function() {
-			depthBg.style.height = '0px';
-		});
-		});
-
-    </script>
-	
-	
-
 
     <footer class="ftco-footer ftco-section">
       <div class="container">
@@ -741,7 +729,7 @@
                 <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>About</a></li>
                 <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Services</a></li>
                 <li><a href="#"><span class="icon-long-arrow-right mr-2"></span>Projects</a></li>
-                <li><a href="http://localhost:8000/contact/"><span class="icon-long-arrow-right mr-2"></span>Contact</a></li>
+                <li><a href="{% url 'contact' %}"><span class="icon-long-arrow-right mr-2"></span>Contact</a></li>
               </ul>
             </div>
           </div>
@@ -749,10 +737,10 @@
              <div class="ftco-footer-widget mb-4">
               <h2 class="ftco-heading-2">Services</h2>
               <ul class="list-unstyled">
-                <li><a href="http://localhost:8000/"><span class="icon-long-arrow-right mr-2"></span>큐티민정</a></li>
-                <li><a href="http://localhost:8000/"><span class="icon-long-arrow-right mr-2"></span>위트지훈</a></li>
-                <li><a href="http://localhost:8000/"><span class="icon-long-arrow-right mr-2"></span>명랑한나</a></li>
-                <li><a href="http://localhost:8000/"><span class="icon-long-arrow-right mr-2"></span>인텔명일</a></li>     
+                <li><a href="{% url 'home' %}"><span class="icon-long-arrow-right mr-2"></span>큐티민정</a></li>
+                <li><a href="{% url 'home' %}"><span class="icon-long-arrow-right mr-2"></span>위트지훈</a></li>
+                <li><a href="{% url 'home' %}"><span class="icon-long-arrow-right mr-2"></span>명랑한나</a></li>
+                <li><a href="{% url 'home' %}"><span class="icon-long-arrow-right mr-2"></span>인텔명일</a></li>     
               </ul>
             </div>
           </div>
@@ -762,8 +750,8 @@
             	<div class="block-23 mb-3">
 	              <ul>
 	                <li><span class="icon icon-map-marker"></span><span class="text">서울특별시 동작구 장승배기로 171 노량진아이비빌딩 3층</span></li>
-	                <li><a href="#"><span class="icon icon-phone"></span><span class="text">02-3673-2100</span></a></li>
-	                <li><a href="http://localhost:8000/contact/"><span class="icon icon-envelope"></span><span class="text">dpswpf5906@naver.com</span></a></li>
+	                <li><a href="#"><span class="icon icon-phone"></span><span class="text">010-2573-8963</span></a></li>
+	                <li><a href="{% url 'contact' %}"><span class="icon icon-envelope"></span><span class="text">wjdwjd1945@gmail.com</span></a></li>
 	              </ul>
 	            </div>
             </div>
@@ -801,5 +789,106 @@
 
   </div>
 
+  <script>
+		window.onscroll = function() {
+			var topButton = document.getElementById("btn_topGo");
+	
+			if (document.body.scrollTop > 1000 || document.documentElement.scrollTop > 1000) {
+				topButton.style.opacity = "1";
+				topButton.style.visibility = "visible";
+			} else {
+				topButton.style.opacity = "0";
+				topButton.style.visibility = "hidden";
+			}
+		};
+
+	document.addEventListener('DOMContentLoaded', function() {
+		const navbar = document.querySelector('.navbar.navbar-expand-lg.navbar-dark.ftco_navbar.bg-dark.ftco-navbar-light');
+		const depthBg = document.querySelector('.depth_bg');
+	
+		navbar.addEventListener('mouseover', function() {
+			depthBg.style.height = '250px';
+		});
+	
+		navbar.addEventListener('mouseout', function() {
+			depthBg.style.height = '0px';
+		});
+		});
+
+	document.querySelectorAll('.preference-button').forEach(button => {
+		button.addEventListener('click', () => {
+			
+			const selectedButtons = document.querySelectorAll('.preference-button.select');
+
+			// 만약 이미 세 개의 버튼이 선택되어 있고 새로운 버튼을 선택하려고 한다면 모든 선택을 해제합니다.
+			if (selectedButtons.length === 3 && !button.classList.contains('select')) {
+				selectedButtons.forEach(btn => btn.classList.remove('select'));
+				document.getElementById('arrow-button').style.display = 'none'; // 화살표 버튼 숨기기
+			} else {
+				// 선택된 상태라면 선택을 해제하고, 선택되지 않은 상태라면 선택합니다.
+				button.classList.toggle('select');
+			}
+
+			// 세 개의 버튼이 선택되면 GO 버튼과 화살표 버튼을 표시합니다.
+			const selectedCount = document.querySelectorAll('.preference-button.select').length;
+			if (selectedCount === 3) {
+				document.getElementById('go-button').style.display = 'block';
+				document.getElementById('arrow-button').style.display = 'block'; // 화살표 버튼 보이기										
+
+			} else {
+				document.getElementById('go-button').style.display = 'none';
+				document.getElementById('arrow-button').style.display = 'none'; // 화살표 버튼 숨기기
+				
+			}
+
+		});
+	});
+
+
+	document.getElementById('go-button').addEventListener('click', function() {
+		const selectedButtons = document.querySelectorAll('.preference-button.select');
+		const selectedTexts = [];
+
+		selectedButtons.forEach(btn => {
+			selectedTexts.push(btn.innerText);
+		});
+
+		// 숨겨진 입력 필드에 데이터를 JSON으로 설정
+		document.getElementById('selected_texts').value = selectedTexts.join(',');
+
+		// 폼 제출
+		document.getElementById('hidden-form').submit();
+	});
+
+
+	// 스크롤 이벤트를 감지하여 GO 버튼을 숨기거나 표시하는 함수
+	function handleScroll() {
+		/* document.querySelectorAll('.preference-button.select').forEach(btn => btn.classList.remove('select')); */
+		const goButton = document.getElementById('go-button');
+		if (goButton.style.display === 'block') {
+			goButton.style.display = 'none'; // 스크롤 시 GO 버튼 숨기기				
+		}			
+	}
+
+	// 스크롤 이벤트 리스너 추가
+	window.addEventListener('scroll', handleScroll);
+
+	function pageSubmit() {
+		const username = frm1.username.value;
+		const password = frm1.pwd.value;
+	  
+		// 빈 값 체크
+		if (username === '' || password === '') {
+		  alert("아이디와 비밀번호를 모두 입력해주세요.");
+		  return; // 함수 종료
+		}
+	  
+		frm1.method = "POST";
+		frm1.action = "{% url 'login' %}";
+		frm1.submit();
+	  }
+
+
+</script>
 </body>
 </html>

@@ -1,0 +1,87 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}analysis{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+
+{% block content %}
+<section class="ftco-section" style="padding-top: 200px;">    
+    <div class="container">
+        <!-- <h1>분석 Results</h1> -->
+        {% if error %}
+            <p>{{ error }}</p>
+        {% else %}
+            <br>
+            <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; color: black; text-align: center; font-size: 1.5em;">
+                <div>"당신의 선호취향 {{ selected_groups|join:", " }}을 반영하여</div>
+                <div>가장 높은 순위의 작품을 추천드리겠습니다."</div>
+            </div>
+            <br>
+            {% for item in top_reviews %}
+                <div class="review-item" style="margin-top: 40px;">
+                    <h1 style="display: flex; justify-content: center; align-items: center; flex-direction: column;">{{ item.title }}</h3>
+
+                    <div class="flex-container">
+                        <!-- <div class="keyword-scores">
+                            <h4>Keyword Scores</h4>
+                            <ul style="color: black;">
+                                {% for group, score in item.keyword_scores.items %}
+                                    <li>{{ group }}: {{ score }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div> -->
+
+                        <div class="radar-chart" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                            <!-- 방사형 그래프 삽입 -->
+                            <img src="data:image/png;base64,{{ item.radar_chart }}" alt="{{ item.title }} Radar Chart">
+                        </div>
+                    </div>
+
+                    <h3>Top Reviews</h4><br>
+                    <ul style="color: black; font-weight: bold; padding-left: 20px;">
+                        {% for review in item.reviews %}
+                            <li>
+                                {{ review.review }}
+                            </li><br>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- <h4>Detail URL</h4> -->
+                    <p style="display: flex; justify-content: center; align-items: center; flex-direction: column; font-size: 1.5em;">
+                        {% if item.reservation_url %}
+                            <a href="{{ item.reservation_url }}" target="_blank">More Detail</a>
+                        {% else %}
+                            <span style="color: red;">No reservation link available</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <hr><br>
+            {% endfor %}
+        {% endif %}
+    </div>
+</section>
+
+
+
+<section class="ftco-section">	
+	<div class="container-fluid p-0">
+		<!-- #전체너비사용 -->
+	</div>
+</section>
+<section class="ftco-section">	
+	<div class="container-fluid p-0">
+		<!-- #전체너비사용 -->
+	</div>
+</section>
+<section class="ftco-section">	
+	<div class="container-fluid p-0">
+		<!-- #전체너비사용 -->
+	</div>
+</section>
+{% endblock %}
+
+

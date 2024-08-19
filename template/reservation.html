@@ -1,0 +1,246 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block title %}reservation{% endblock %}
+
+{% block style %}
+<style>
+    .productWrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .productMain {
+        flex: 1 1 50%;
+    }
+    .posterBox {
+        display: flex;
+        align-items: center; /* 수직 가운데 정렬 */
+    }
+    .posterBoxImage {
+        flex: 1; /* 이미지의 비율을 맞추기 위해 flex-grow 설정 */
+        max-width: 500px; /* 이미지가 부모 요소를 넘지 않도록 */
+        max-height: 600px; /* 이미지의 원본 비율 유지 */
+    }
+    .productSide {
+        flex: 1; /* 제품 설명 영역의 비율을 맞추기 위해 flex-grow 설정 */
+        padding-left: 30px;
+    }
+    .info {
+        list-style: none;
+        padding: 0;
+    }
+    .infoItem {
+        margin-bottom: 20px;
+        display: inline-flex;
+        width: 100%;
+    }
+    .infoLabel {
+        font-weight: bold;
+        font-size: 18px;
+        width: 100px;
+    }
+    .custom-btn {
+        width: 215px;
+        height: 60px;
+        border: none;
+        margin-left: 92px;
+        margin-top: 3px;
+    }
+    #btn_topGo {
+        background-color: rgb(219, 21, 21); /* 배경색을 빨간색으로 설정 */
+        text-align: center; /* 텍스트를 가운데 정렬 */
+        border: none; /* 테두리 제거 */
+        cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */
+        padding: 10px; /* 버튼 내부 여백 설정 */
+        position: fixed; /* 화면 고정 */
+        bottom: 50px; /* 화면 하단에서 20px 위로 위치 */
+        right: 20px; /* 화면 오른쪽에서 20px 왼쪽으로 위치 */
+        z-index: 1000; /* 다른 요소들 위에 나타나도록 설정 */
+        width: 3.5%;
+    }
+
+    #prf_box{ 
+        overflow: hidden;
+        transition: height 0.5s ease;
+        max-width: 100%;
+    }
+
+    #prf_box.hidden{height: 500px;}
+
+    #prf_more_btn{margin: 30px auto; background-color:red; font-size:white;}
+
+    .prf_more_btn{position: relative;}
+
+    .prf_more_btn:before {
+        content: '';
+        position: absolute;
+        top: -125px; 
+        left: 0;
+        display: block;
+        width: 100%;
+        height: 96px;
+        background-image: linear-gradient(to bottom, rgba(83, 83, 83, 0), rgba(255, 255, 255, 0.8) 66%, rgba(255, 255, 255, 0.94) 83%, rgba(255, 255, 255, 0.98) 91%, #ffffff);
+}
+    
+
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="ftco-section" style="color:black;">    
+    <div class="container" style="margin-top:100px;">
+        <div class="leftWingWrapper">
+            <ul></ul>
+        </div>
+        <div class="productWrapper">
+            <div class="productTop" style="border-bottom: 1.98px solid #3d3d3d;">
+                <div class="productMain">
+                    <div class="productMainTop">
+                        <div class="summary">
+                            <div class="summaryTop">
+                                <h2 class="prfnm" style="font-weight: bold; padding-left: 10px; margin-bottom: -17px;">[{{ content_dict.PRFNM }}]</h2>
+                                <p class="prdTitleSmall"></p>
+                            </div>
+                        </div>
+                        <div class="summaryBody" style="margin-bottom:118px;">
+                            <div class="posterBox" style="margin-top:40px;">
+                                <img class="posterBoxImage" src="{{ content_dict.POSTER }}" alt="Poster Image"> 
+                                <div class="productSide" style="margin-left:150px;">
+                                    <ul class="info" style="margin-top: 59px; padding-left:0px;">
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">장소 </strong>
+                                            <div class="infoDesc">{{ content_dict.PLACENM_x }}</div>
+                                        </li>
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">공연기간 </strong>
+                                            <div class="infoDesc">{{ content_dict.PRFPDFROM }} ~ {{ content_dict.PRFPDTO }}</div>
+                                            {% if content_dict.D_DAY != 0 %}
+                                                <span class="d-day" style="margin-left: 15px; margin-top:4px; color: rgb(244, 73, 73); font-size: 12px;">({{ content_dict.D_DAY }} Days)</span>
+                                            {% else %}
+                                                <span class="d-day" style="margin-left: 15px; color: rgb(244, 73, 73); font-size: 13px; font-weight:bold;">Last Day</span>
+                                            {% endif %}</p>
+                                        </li>
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">공연시간 </strong>
+                                            <div class="infoDesc">{{ content_dict.PRFRUNTIME }}</div>
+                                        </li>
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">관람연령 </strong>
+                                            <div class="infoDesc">{{ content_dict.PRFAGE }}</div>
+                                        </li>
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">공연장 </strong>
+                                            <div class="infoDesc">{{ content_dict.PLACENM_x }}</div>
+                                        </li>
+                                        <li class="infoItem">
+                                            <strong class="infoLabel">가격 </strong>
+                                            <div class="infoDesc">{{ content_dict.PCSEGUIDANCE|safe }}</div>
+                                        </li>
+                                        <form id="reservationForm">
+                                            <li class="infoItem">
+                                                <strong class="infoLabel">예매처 </strong>
+                                                <div class="infoDesc">
+                                                    {% for site_name, site_url in content_dict.RELATES.items %}
+                                                        <input type="radio" id="{{ site_name }}" name="site" value="{{ site_url }}">
+                                                        <label for="{{ site_name }}">{{ site_name }}</label><br>
+                                                    {% endfor %}
+                                                </div>
+                                            </li>
+                                            <button type="submit" class="custom-btn">
+                                                예매하기
+                                                <span class="ion-ios-arrow-round-forward"></span>
+                                            </button>
+                                        </form>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="productBottom" style="margin-top:80px; margin-bottom:180px;">
+            <img src="{% static 'images/공연소개_1.png' %}" alt="공연소개 이미지" style="display: block; margin: 0 auto; width:80%;">
+            <!-- 공연 상세 정보 이미지 -->
+            <div id="prf_box" class="hidden">
+                {% for imgurl in content_dict.INFO_URLS %}
+                <p style="text-align: center;">
+                    <img src="{{ imgurl }}" class="prf_box_img" alt="Additional Image" style="display: block; margin: -23px auto; max-width: 100%; height: auto;">
+                {% endfor %}
+                </p>
+            </div>
+            <!-- 자세히 보기 버튼 -->
+            <div class="prf_more_btn" style="text-align: center; margin-top:20px;">
+                <button type="button" id="detailMoreButton" class="detailMore" onclick="moreDetail();" style="display: inline-block; width:80%; height:100px; background-color:white; text-align:center; font-size:17px; font-weight:bold;">
+                    <span id="detailMoreText">MORE INFORMATION</span>
+                    <img id="arrowImage" src="{% static 'images/위로 화살표.png' %}" style="margin-left:17px; width:15px; padding-bottom:3px; transform:rotate(180deg)">
+                </button>
+            </div>            
+            <img src="{% static 'images/api_안내문구.png' %}" alt="무단도용 안내" style="display: block; margin: 0 auto; width:80%; margin-top:130px; margin-bottom:-369px;">
+        </div>  
+    </div>
+</section>
+
+<button type="button" id="btn_topGo" style="right: 0px; outline:none; transition: opacity 0.5s ease, visibility 0.5s ease; opacity: 0; visibility: hidden;" onclick="window.scrollTo(0,0);">
+    <span style="color: white; display: inline-block; text-align: center; line-height: 1.2;">
+        <div style="font-size: 20px; letter-spacing: -1px;">▲</div>
+        <div style="font-size: 16px; letter-spacing: -1px;">TOP</div>
+    </span>
+</button>
+
+<script>
+    window.onscroll = function() {
+        var topButton = document.getElementById("btn_topGo");
+
+        if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+            topButton.style.opacity = "1";
+            topButton.style.visibility = "visible";
+        } else {
+            topButton.style.opacity = "0";
+            topButton.style.visibility = "hidden";
+        }
+    };
+
+    document.getElementById('reservationForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 기본 폼 제출 동작 방지
+        
+        // 선택된 라디오 버튼 가져오기
+        const selectedSite = document.querySelector('input[name="site"]:checked');
+
+        if (selectedSite) {
+            // 선택된 URL로 리디렉션
+            window.location.href = selectedSite.value;
+        } else {
+            alert('사이트를 선택해주세요.');
+        }
+    });
+
+    function moreDetail() {
+        var prfBox = document.getElementById('prf_box');
+        var detailMoreText = document.getElementById('detailMoreText');
+        var arrowImage = document.getElementById('arrowImage');
+    
+        if (prfBox.classList.contains('hidden')) {
+            // 모든 이미지의 높이를 계산
+            var images = prfBox.querySelectorAll('img');
+            var totalHeight = 0;
+            images.forEach(function(img) {
+                totalHeight += img.scrollHeight; // 각 이미지의 실제 높이를 더함
+            });
+    
+            prfBox.style.height = totalHeight + 'px'; // 계산된 전체 높이로 설정
+            prfBox.classList.remove('hidden');
+            detailMoreText.textContent = 'CLOSE  INFORMATION';
+            arrowImage.style.transform = 'rotate(0deg)';
+        } else {
+            prfBox.style.height = '500px'; // 다시 접을 때 기본 높이로 설정
+            prfBox.classList.add('hidden');
+            detailMoreText.textContent = 'MORE  INFORMATION';
+            arrowImage.style.transform = 'rotate(180deg)';
+        }
+    }
+    
+    
+</script>
+{% endblock %}
