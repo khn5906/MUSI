@@ -122,6 +122,7 @@ def myinfo(request):
             # check_password(평문, 해쉬된암호)
             if check_password(origin, user.password):          
                 password = request.POST.get('pwd1')            
+                userInfo = User.objects.get(username=user.username)
                 userInfo.set_password(password)
                 userInfo.save()
                 msg = "<script>";
