@@ -331,9 +331,9 @@ job()
 
 
 
-# # 매일 19시에 실행 (kopis 정보 업데이트 시간 반영)
-# schedule.every().day.at("19:10").do(job)
+# 매일 19시에 실행 (kopis 정보 업데이트 시간 반영)
+schedule.every().day.at("19:10").do(job)
 
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1)
+while True:
+    schedule.run_pending()
+    time.sleep(1)
