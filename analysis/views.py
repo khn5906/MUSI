@@ -3,6 +3,10 @@ from django.http import JsonResponse
 from .utils import load_data, generate_radar_chart, process_user_input
 import pandas as pd
 from rapidfuzz import process
+import time
+from datetime import datetime, timedelta
+
+current_date = datetime.now().strftime('%Y%m%d')
 
 def analysis(request):
     try:
@@ -17,7 +21,7 @@ def analysis(request):
             # 데이터 로드 및 필요한 전처리 작업
             data = load_data()
             score_df = pd.read_csv('keyword_score.csv', index_col='title')
-            all_detail_list_df = pd.read_csv('all_detail_list.csv')  # PRFID를 포함한 데이터
+            all_detail_list_df = pd.read_csv(f'myweb/data/data_{current_date}/all_detail_list_{current_date}.csv')  # PRFID를 포함한 데이터
 
             comb_name = '_'.join(selected_groups)
             top_titles = score_df.sort_values(by=comb_name, ascending=False).head(3).index.tolist()
@@ -119,12 +123,31 @@ def process_input(request):
         title = request.POST.get('title')
         rating = float(request.POST.get('rating'))
         review = request.POST.get('review')
+        data = load_data()
 
         # 추천 알고리즘 실행 (협업 필터링)
         recommended_titles = process_user_input(title, rating, review)
 
+        # 중복값 제거
+        recommended_titles = list(set(recommended_titles))
+
+        top_reviews = []
+        for title in recommended_titles:
+            title_reviews = data[data['title2'] == title].sort_values(by='empathy', ascending=False).head(3)
+            review_list = []
+            for _, review in title_reviews.iterrows():
+                review_list.append({
+                    'title': review['title'],
+                    'review': review['review'],
+                    'empathy': int(review['empathy']),
+                    'star': int(review['star']),
+                    'url': review['url']
+                })
+            top_reviews.append({'title': title, 'reviews': review_list})
+
         # 추천 결과를 템플릿에 전달
         return render(request, 'analysis/analysis2.html', {
+            'top_reviews': top_reviews,
             'recommended_titles': recommended_titles
         })
     # GET 요청일 경우, 입력 폼이 있는 페이지로 리다이렉트
