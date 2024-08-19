@@ -5,10 +5,11 @@
 		
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta name="description" content="Free Bootstrap 4 Template by Colorlib">
-		<meta property="og:title" content="Square - Free Bootstrap 4 Template by Colorlib">
-		<meta property="og:description" content="Free Bootstrap 4 Template by Colorlib">
-		<meta property="og:image" content="{% static 'images/your-image.jpg' %}">
+		<meta name="title" content="MUSI - 사용자 맞춤 뮤지컬 추천 플랫폼">
+		<meta name="description" content="뮤지컬 리뷰 기반 사용자 분석 추천 서비스">
+		<meta property="og:title" content="MUSI - 사용자 맞춤 뮤지컬 추천 플랫폼">
+		<meta property="og:description" content="뮤지컬 리뷰 기반 사용자 분석 추천 서비스">
+		<meta property="og:image" content="{% static 'images/musimark.png' %}">
 	
 		<title>{% block title %}home{% endblock %}</title>
 		
@@ -27,6 +28,9 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z0aqdob57h"></script>
 		
+		<link rel="icon" type="image/png" sizes="16x16"  href="{% static 'images/favicon-16x16.png' %}">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="theme-color" content="#ffffff">
 
 		<style>
 			body {
@@ -610,7 +614,7 @@
 						<span class="icon-globe"></span>
 					</div>
 					<h3 class="mb-4">Website</h3>
-				  <p><a href="{% url 'home' %}" style="color:#4e555b">http://localhost:8000/home/</a></p>
+				  <p><a href="{% url 'home' %}" style="color:#4e555b">http://musi.n-e.kr/</a></p>
 				</div>
 			</div>
 		  </div>
