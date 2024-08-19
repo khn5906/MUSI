@@ -10,5 +10,4 @@ urlpatterns = [
     path('analysis/', views.analysis, name='analysis'),  
     path('analysis_review/', views.analysis_review, name='review'),  
     path('process_input/', views.process_input, name='process_input'),     
-    path('process_input/', views.process_input, name='process_input'),     
 ]
