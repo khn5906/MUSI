@@ -151,6 +151,7 @@ def process_input(request):
             'recommended_titles': recommended_titles
         })
     # GET 요청일 경우, 입력 폼이 있는 페이지로 리다이렉트
-    return render(request, 'home.html')
+    else:
+        return render(request, 'home.html')
 
 # views.py
