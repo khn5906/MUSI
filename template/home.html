@@ -335,7 +335,7 @@
 	{% block content %}
 	<section data-section="home">
       <div class="ftco-section" style="height:100vh;">        
-		<div class="video-container">
+		<div class="video-container" style="padding-top:8%;">
 			<div data-scrollax-parent="true">
 				<!-- class="row no-gutters slider-text js-fullheight align-items-center" -->
 				<div class="col-md-8 ftco-animate" data-scrollax="properties: { translateY: '70%' }" style="margin-top:270px;">
@@ -343,7 +343,7 @@
 				<p class="mb-4" style="color:#4e555b; margin-left:25%;" data-scrollax="properties: { translateY: '30%',  }">Let's go to the world of musicals with musi</p>		
 				</div>					
 			</div>
-			<video autoplay muted loop class="logo-video">
+			<video autoplay muted loop class="logo-video" style="padding-top:8%;">
 				<source src="{% static 'images/musi.mp4' %}" type="video/mp4">
 				Your browser does not support the video tag.
 			</video>
@@ -352,7 +352,7 @@
     </section>
 		
 
-    <section class="ftco-section ftco-project bg-light js-fullheight align-items-center" data-section="projects">
+    <section class="ftco-section ftco-project bg-light js-fullheight align-items-center" data-section="projects" style="padding-top:5%;">
 		<div class="container px-md-5">
 		  <div class="row justify-content-center pb-5">
 			<div class="col-md-12 heading-section text-center ftco-animate">
@@ -401,7 +401,7 @@
 	  </section>
 	  
 
-    <section class="ftco-section bg-light" data-section="analysis" style="height:100vh;">
+    <section class="ftco-section bg-light" data-section="analysis" style="height:100vh; padding-top:8%;">
       <div class="container">
         <div class="row justify-content-center mb-5" style="padding-top: 120px;">
           <div class="col-md-7 heading-section text-center ftco-animate">
@@ -572,7 +572,7 @@
 			</div>
 		</div>
 	</section>
-    <section class="ftco-section contact-section" data-section="contact" style="height: 100vh;">
+    <section class="ftco-section contact-section" data-section="contact" style="height: 100vh; padding-top:6%;">
 		<div class="container">
 		  <div class="col-md-12 heading-section text-center ftco-animate">
 			  <span class="subheading">contact</span>
@@ -769,7 +769,7 @@
 		const depthBg = document.querySelector('.depth_bg');
 	
 		navbar.addEventListener('mouseover', function() {
-			depthBg.style.height = '250px';
+			depthBg.style.height = '240px';
 		});
 	
 		navbar.addEventListener('mouseout', function() {
