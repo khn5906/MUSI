@@ -331,7 +331,7 @@ job()
 
 
 
-# 매일 06시에 실행 (kopis 정보 업데이트 시간 반영)
+# 매일 6시에 크롤링 실행 (트래픽 적은 시간대로 선정)
 schedule.every().day.at("06:00").do(job)
 
 while True:
