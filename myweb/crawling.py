@@ -332,8 +332,8 @@ job()
 
 
 # 매일 6시에 크롤링 실행 (트래픽 적은 시간대로 선정)
-schedule.every().day.at("06:00").do(job)
+# schedule.every().day.at("06:00").do(job)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# while True:
+#    schedule.run_pending()
+#    time.sleep(1)
